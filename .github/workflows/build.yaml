@@ -160,7 +160,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: ${{ env.project_archive }}
-          path: ${{ env.project_archive }}
+          path: .
 
       - name: Extarct build artifact.
         run: tar -xvzf "${project_archive}"
@@ -321,7 +321,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: ${{ env.project_archive }}
-          path: ${{ env.project_archive }}
+          path: .
 
       - name: Extarct build artifact.
         run: tar -xvzf "${project_archive}"
