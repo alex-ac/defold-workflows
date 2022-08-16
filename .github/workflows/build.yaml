@@ -1,7 +1,7 @@
 name: Build game archive
 
 on:
-  wolkflow_call:
+  workflow_call:
     inputs:
       defold_version:
         description: A version of defold used for the build.
