@@ -185,7 +185,7 @@ jobs:
           echo "::set-output name=artifact_name::${artifact_name}"
           echo "::set-output name=artifact_path::${artifact_path}"
 
-      - uses: action/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         if: ${{ inputs.bundle_linux }}
         with:
           name: ${{ steps.bundle_linux.outputs.artifact_name }}
@@ -213,7 +213,7 @@ jobs:
           echo "::set-output name=artifact_name::${artifact_name}"
           echo "::set-output name=artifact_path::${artifact_path}"
 
-      - uses: action/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         if: ${{ inputs.bundle_win_x64 }}
         with:
           name: ${{ steps.bundle_win_x64.outputs.artifact_name }}
@@ -241,7 +241,7 @@ jobs:
           echo "::set-output name=artifact_name::${artifact_name}"
           echo "::set-output name=artifact_path::${artifact_path}"
 
-      - uses: action/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         if: ${{ inputs.bundle_win_x86 }}
         with:
           name: ${{ steps.bundle_win_x86.outputs.artifact_name }}
@@ -267,7 +267,7 @@ jobs:
           echo "::set-output name=artifact_name::${artifact_name}"
           echo "::set-output name=artifact_path::${artifact_path}"
 
-      - uses: action/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         if: ${{ inputs.bundle_mac && !inputs.bundle_mac_dmg }}
         with:
           name: ${{ steps.bundle_mac.outputs.artifact_name }}
@@ -294,7 +294,7 @@ jobs:
           echo "::set-output name=artifact_name::${artifact_name}"
           echo "::set-output name=artifact_pathname::${artifact_path}"
 
-      - uses: action/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         if: ${{ inputs.bundle_android }}
         with:
           name: ${{ steps.bundle_android.outputs.artifact_name }}
@@ -349,7 +349,7 @@ jobs:
           echo "::set-output name=artifact_name::${artifact_name}"
           echo "::set-output name=artifact_path::${artifact_path}"
 
-      - uses: action/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         if: ${{ inputs.bundle_mac && !inputs.bundle_mac_dmg }}
         with:
           name: ${{ steps.bundle_mac.outputs.artifact_name }}
@@ -374,7 +374,7 @@ jobs:
           echo "::set-output name=artifact_name::${artifact_name}"
           echo "::set-output name=artifact_path::${artifact_path}"
 
-      - uses: action/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         if: ${{ inputs.bundle_ios }}
         with:
           name: ${{ steps.bundle_ios.outputs.artifact_name }}
