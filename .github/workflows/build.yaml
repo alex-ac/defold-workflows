@@ -304,6 +304,10 @@ jobs:
     needs: build
     runs-on: macos-latest
     if: ${{ inputs.bundle_ios || ( inputs.bundle_mac && inputs.bundle_mac_dmg ) }}
+    env:
+      project_name: ${{ needs.build.outputs.project_name }}
+      project_archive: ${{ needs.build.outputs.project_archive }}
+      project_path: ${{ inputs.project_path }}
     steps:
       - uses: actions/checkout@v3
 
