@@ -1,0 +1,370 @@
+name: Build game archive
+
+on:
+  wolkflow_call:
+    inputs:
+      defold_version:
+        description: A version of defold used for the build.
+        default: 1.3.4
+        type: string
+      project_path:
+        description: A path to the project.
+        default: .
+        type: string
+      exclude_build_folders:
+        description: Comma-separated list of folders, excluded from the build.
+        required: false
+        type: string
+
+      bundle_linux:
+        description: Enable bundling for Linux.
+        default: true
+        type: boolean
+
+      bundle_win_x64:
+        description: Enable bundling for Windows (x86_64).
+        default: true
+        type: boolean
+
+      bundle_win_x86:
+        description: Enable bundling for Windows (x86).
+        default: false
+        type: boolean
+
+      bundle_web:
+        description: Enable bundling for web (WASM).
+        default: true
+        type: boolean
+
+      bundle_mac:
+        description: Enable bundling for mac (x86_64).
+        default: true
+        type: boolean
+
+      bundle_mac_dmg:
+        description: Build a dmg image for mac (will be bundled on mac).
+        default: true
+        type: boolean
+
+      bundle_android:
+        description: Enable bundling for android (armv7, arm64).
+        default: true
+        type: boolean
+
+      bundle_ios:
+        description: Enable bundling for iOS (needs mac builder and pro.
+        default: true
+        type: boolean
+
+    outputs:
+      game_archive_artifact:
+        description: A name of built game archive artifact.
+        value: ${{ jobs.build.outputs.project_archive }}
+      project_name:
+        description: A name of game from the game.project config file.
+        value: ${{ jobs.build.outputs.project_archive }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      project_name: ${{ steps.detect_project_name.outputs.project_name }}
+      project_archive: ${{ steps.detect_project_name.outputs.project_archive }}
+    env:
+      defold_version: ${{ inputs.defold_version }}
+      project_path: ${{ inputs.project_path }}
+      exclude_build_folders: ${{ inputs.exclude_build_folders }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Detect project name
+        id: detect_project_name
+        shell: python
+        run: |
+          import configparser
+          import os
+
+          parser = configparser.ConfigParser()
+          config_path = os.path.join(
+              os.environ['project_path'], 'game.project')
+
+          with open(config_path, 'r', encoding='utf-8') as f:
+              parser.read_file(f, source=config_path)
+
+          project_name = parser.get('project', 'title')
+
+          print(f'::set-output project_name={project_name}')
+          print(f'::set-output project_archive={project_name}-build.tar.gz')
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Download bob.jar
+        env:
+          defold_version: ${{ inputs.defold_version }}
+        run: |
+          wget "https://github.com/defold/defold/releases/download/${defold_version}/bob.jar" -O ~/bob.jar
+
+      - name: Resolve dependencies
+        env:
+          project_name: ${{ steps.detect_project_name.outputs.project_name }}
+          project_archive: ${{ steps.detect_project_name.outputs.project_archive }}
+        run: |
+          java -jar ~/bob.jar \
+              --exclude-build-folder "${exclude_build_folders}" \
+              --input "${project_path}" \
+              --output "build/${project_name}" \
+              --archive build
+
+          tar -cvzf "${project_archive}" "build/${project_name}"
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.detect_project_name.outputs.project_archive }}
+          path: ${{ steps.detect_project_name.outputs.project_archive }}
+
+  bundle-non-apple:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      project_name: ${{ needs.build.outputs.project_name }}
+      project_archive: ${{ needs.build.outputs.project_archive }}
+      project_path: ${{ inputs.project_path }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Download bob.jar
+        env:
+          defold_version: ${{ inputs.defold_version }}
+        run: |
+          wget "https://github.com/defold/defold/releases/download/${defold_version}/bob.jar" -O ~/bob.jar
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.project_archive }}
+          path: ${{ env.project_archive }}
+
+      - name: Extarct build artifact.
+        run: tar -xvzf "${project_archive}"
+
+      - name: Bundle Linux
+        id: bundle_linux
+        if: ${{ inputs.bundle_linux }}
+        run: |
+          java -jar ~/bob.jar \
+              --input "${project_path}" \
+              --output "build/${project_name}" \
+              --bundle-output "build/bundles/linux" \
+              --platform x86_64-linux \
+              bundle
+
+          artifact_name=${project_name}-linux.tar.gz
+          artifact_path=build/bundles/${artifact_name}
+
+          tar -cvzf "${artifact_path}" \
+              -C "build/bundles/linux" "./${project_name}"
+
+          echo "::set-output artifact_name=${artifact_name}"
+          echo "::set-output artifact_path=${artifact_path}"
+
+      - uses: action/upload-artifact@v3
+        if: ${{ inputs.bundle_linux }}
+        with:
+          name: ${{ steps.bundle_linux.outputs.artifact_name }}
+          path: ${{ steps.bundle_linux.outputs.artifact_path }}
+
+      - name: Bundle Windows (x86_64)
+        id: bundle_win_x64
+        if: ${{ inputs.bundle_win_x64 }}
+        run: |
+          java -jar ~/bob.jar \
+              --input "${project_path}" \
+              --output "build/${project_name}" \
+              --bundle-output "build/bundles/win_x64" \
+              --platform x86_64-win32 \
+              bundle
+
+          artifact_name=${project_name}-win-x64.zip
+          artifact_path=build/bundles/${artifact_name}
+
+          (
+            cd build/bundles/win_x64
+            zip -r9 "../${artifact_name}" "${project_name}"
+          )
+
+          echo "::set-output artifact_name=${artifact_name}"
+          echo "::set-output artifact_path=${artifact_path}"
+
+      - uses: action/upload-artifact@v3
+        if: ${{ inputs.bundle_win_x64 }}
+        with:
+          name: ${{ steps.bundle_win_x64.outputs.artifact_name }}
+          path: ${{ steps.bundle_win_x64.outputs.artifact_path }}
+
+      - name: Bundle Windows (x86)
+        id: bundle_win_x86
+        if: ${{ inputs.bundle_win_x86 }}
+        run: |
+          java -jar ~/bob.jar \
+              --input "${project_path}" \
+              --output "build/${project_name}" \
+              --bundle-output "build/bundles/win_x86" \
+              --platform x86-win32 \
+              bundle
+
+          artifact_name=${project_name}-win-x86.zip
+          artifact_path=build/bundles/${artifact_name}
+
+          (
+            cd build/bundles/win_x86
+            zip -r9 "../${artifact_name}" "${project_name}"
+          )
+
+          echo "::set-output artifact_name=${artifact_name}"
+          echo "::set-output artifact_path=${artifact_path}"
+
+      - uses: action/upload-artifact@v3
+        if: ${{ inputs.bundle_win_x86 }}
+        with:
+          name: ${{ steps.bundle_win_x86.outputs.artifact_name }}
+          path: ${{ steps.bundle_win_x86.outputs.artifact_path }}
+
+      - name: Bundle MacOS
+        id: bundle_mac
+        if: ${{ inputs.bundle_mac && !inputs.bundle_mac_dmg }}
+        run: |
+          java -jar ~/bob.jar \
+              --input "${project_path}" \
+              --output "build/${project_name}" \
+              --bundle-output "build/bundles/mac" \
+              --platform x86_64-darwin \
+              bundle
+
+          artifact_name=${project_name}-mac.tar.gz
+          artifact_path=build/bundles/${artifact_name}
+
+          tar -cvzf "${artifact_path}" \
+              -C build/bundles/mac "./${project_name}"
+
+          echo "::set-output artifact_name=${artifact_name}"
+          echo "::set-output artifact_path=${artifact_path}"
+
+      - uses: action/upload-artifact@v3
+        if: ${{ inputs.bundle_mac && !inputs.bundle_mac_dmg }}
+        with:
+          name: ${{ steps.bundle_mac.outputs.artifact_name }}
+          path: ${{ steps.bundle_mac.outputs.artifact_path }}
+
+      - name: Bundle Android
+        id: bundle_android
+        if: ${{ inputs.bundle_android }}
+        run: |
+          java -jar ~/bob.jar \
+              --input "${project_path}" \
+              --output "build/${project_name}" \
+              --bundle-output "build/bundles/android" \
+              --platform arm64-android \
+              --architectures armv7-android,arm64-android \
+              bundle
+
+          artifact_name=${project_name}-android.apk
+          artifact_path=build/bundles/${artifact_name}
+
+          ln "build/bundles/android/${project_name}/${project_name}.apk" \
+              "${artifact_path}"
+
+          echo "::set-output artifact_name=${artifact_name}"
+          echo "::set-output artifact_path=${artifact_path}"
+
+      - uses: action/upload-artifact@v3
+        if: ${{ inputs.bundle_android }}
+        with:
+          name: ${{ steps.bundle_android.outputs.artifact_name }}
+          path: ${{ steps.bundle_android.outputs.artifact_path }}
+
+  bundle-apple:
+    needs: build
+    runs-on: macos-latest
+    if: ${{ inputs.bundle_ios || ( inputs.bundle_mac && inputs.bundle_mac_dmg ) }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Download bob.jar
+        env:
+          defold_version: ${{ inputs.defold_version }}
+        run: |
+          wget "https://github.com/defold/defold/releases/download/${defold_version}/bob.jar" -O ~/bob.jar
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.project_archive }}
+          path: ${{ env.project_archive }}
+
+      - name: Extarct build artifact.
+        run: tar -xvzf "${project_archive}"
+
+      - name: Bundle Mac
+        id: bundle_mac
+        if: ${{ inputs.bundle_mac && inputs.bundle_mac_dmg }}
+        run: |
+          java -jar ~/bob.jar \
+              --input "${project_path}" \
+              --output "build/${project_name}" \
+              --bundle-output "build/bundles/mac" \
+              --platform x86_64-darwin \
+              bundle
+
+          artifact_name=${project_name}-mac.dmg
+          artifact_path=build/bundles/${artifact_name}
+
+          ln -sf /Applications build/bundles/mac/Applications
+          hdiutil create -format UDZO \
+              -srcfolder build/bundles/mac
+              -volname "${project_name}"
+              "${artifact_path}"
+
+          echo "::set-output artifact_name=${artifact_name}"
+          echo "::set-output artifact_path=${artifact_path}"
+
+      - uses: action/upload-artifact@v3
+        if: ${{ inputs.bundle_mac && !inputs.bundle_mac_dmg }}
+        with:
+          name: ${{ steps.bundle_mac.outputs.artifact_name }}
+          path: ${{ steps.bundle_mac.outputs.artifact_path }}
+
+      - name: Bundle iOS
+        if: ${{ inputs.bundle_ios }}
+        id: bundle_ios
+        run: |
+          java -jar ~/bob.jar \
+              --input "${project_path}" \
+              --output "build/${project_name}" \
+              --bundle-output "build/bundles/ios" \
+              --platform x86_64-darwin \
+              bundle
+
+          artifact_name=${project_name}-ios.ipa
+          artifact_path=build/bundles/${artifact_name}
+
+          ln "build/bundles/ios/${project_name}.ipa" "${artifact_path}"
+
+          echo "::set-output artifact_name=${artifact_name}"
+          echo "::set-output artifact_path=${artifact_path}"
+
+      - uses: action/upload-artifact@v3
+        if: ${{ inputs.bundle_ios }}
+        with:
+          name: ${{ steps.bundle_ios.outputs.artifact_name }}
+          path: ${{ steps.bundle_ios.outputs.artifact_path }}
