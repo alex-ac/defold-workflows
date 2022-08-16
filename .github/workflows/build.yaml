@@ -346,8 +346,8 @@ jobs:
 
           ln -sf /Applications build/bundles/mac/Applications
           hdiutil create -format UDZO \
-              -srcfolder build/bundles/mac
-              -volname "${project_name}"
+              -srcfolder build/bundles/mac \
+              -volname "${project_name}" \
               "${artifact_path}"
 
           echo "::set-output name=artifact_name::${artifact_name}"
