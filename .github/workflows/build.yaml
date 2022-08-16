@@ -292,7 +292,7 @@ jobs:
               "${artifact_path}"
 
           echo "::set-output name=artifact_name::${artifact_name}"
-          echo "::set-output name=artifact_pathname::${artifact_path}"
+          echo "::set-output name=artifact_path::${artifact_path}"
 
       - uses: actions/upload-artifact@v3
         if: ${{ inputs.bundle_android }}
