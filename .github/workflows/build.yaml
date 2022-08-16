@@ -281,7 +281,7 @@ jobs:
               --input "${project_path}" \
               --output "build/${project_name}" \
               --bundle-output "build/bundles/android" \
-              --platform arm64-android \
+              --platform armv7-android \
               --architectures armv7-android,arm64-android \
               bundle
 
