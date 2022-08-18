@@ -354,7 +354,7 @@ jobs:
           echo "::set-output name=artifact_path::${artifact_path}"
 
       - uses: actions/upload-artifact@v3
-        if: ${{ inputs.bundle_mac && !inputs.bundle_mac_dmg }}
+        if: ${{ inputs.bundle_mac && inputs.bundle_mac_dmg }}
         with:
           name: ${{ steps.bundle_mac.outputs.artifact_name }}
           path: ${{ steps.bundle_mac.outputs.artifact_path }}
@@ -362,12 +362,14 @@ jobs:
       - name: Bundle iOS
         if: ${{ inputs.bundle_ios }}
         id: bundle_ios
+        timeout-minutes: 5
         run: |
           java -jar ~/bob.jar \
               --input "${project_path}" \
               --output "build/${project_name}" \
               --bundle-output "build/bundles/ios" \
               --platform arm64-darwin \
+              --verbose \
               bundle
 
           artifact_name=${project_name}-ios.ipa
