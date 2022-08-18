@@ -367,7 +367,7 @@ jobs:
               --input "${project_path}" \
               --output "build/${project_name}" \
               --bundle-output "build/bundles/ios" \
-              --bundle arm64-darwin \
+              --platform arm64-darwin \
               bundle
 
           artifact_name=${project_name}-ios.ipa
