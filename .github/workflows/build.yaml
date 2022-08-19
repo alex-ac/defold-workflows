@@ -72,25 +72,25 @@ jobs:
         sha1: ${{ inputs.defold_version }}
 
     - id: detect_project_name
-      uses: .github/actions/detect_project_name.yml
+      uses: ./.github/actions/detect_project_name.yml
       with:
         project_path: ./src/${{ inputs.project_path }}
 
-    - uses: .github/actions/bob.yml
+    - uses: ./.github/actions/bob.yml
       timeout-minutes: 5
       with:
         input: ./src/${{ inputs.project_path }}
         output: ./build/default
         action: resolve
 
-    - uses: .github/actions/bob.yml
+    - uses: ./.github/actions/bob.yml
       timeout-minutes: 5
       with:
         input: ./src/${{ inputs.project_path }}
         output: ./build/default
         action: build
 
-    - uses: .github/actions/bob.yml
+    - uses: ./.github/actions/bob.yml
       timeout-minutes: 5
       with:
         inputs: ./src/${{ inputs.project_path }}
@@ -100,19 +100,19 @@ jobs:
         architectures: ${{ matrix.architectures }}
         action: bundle
 
-    - uses: .github/actions/package_tgz.yml
+    - uses: ./.github/actions/package_tgz.yml
       if: ${{ matrix.bundle_type == "tgz" }}
       with:
         input: ./build/${{ matrix.target_os }}
         output: ./build/${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.tgz
 
-    - uses: .github/actions/package_zip.yml
+    - uses: ./.github/actions/package_zip.yml
       if: ${{ matrix.bundle_type == "zip" }}
       with:
         input: ./build/${{ matrix.target_os }}
         output: ./build/${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.tgz
 
-    - uses: .github/actions/package_dmg.yml
+    - uses: ./.github/actions/package_dmg.yml
       if: ${{ matrix.bundle_type == "dmg" }}
       with:
         input: ./build/${{ matrix.target_os }}
