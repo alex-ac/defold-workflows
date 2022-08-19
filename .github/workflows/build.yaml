@@ -55,7 +55,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        repo: alex-ac/defold-workflows
+        repository: alex-ac/defold-workflows
 
     - uses: actions/checkout@v3
       with:
