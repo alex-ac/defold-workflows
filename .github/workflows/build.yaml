@@ -103,31 +103,31 @@ jobs:
         action: bundle
 
     - uses: ./.github/actions/package_tgz.yml
-      if: ${{ matrix.bundle_type == "tgz" }}
+      if: ${{ matrix.bundle_type == 'tgz' }}
       with:
         input: ./build/${{ matrix.target_os }}
         output: ./build/${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.tgz
 
     - uses: ./.github/actions/package_zip.yml
-      if: ${{ matrix.bundle_type == "zip" }}
+      if: ${{ matrix.bundle_type == 'zip' }}
       with:
         input: ./build/${{ matrix.target_os }}
         output: ./build/${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.tgz
 
     - uses: ./.github/actions/package_dmg.yml
-      if: ${{ matrix.bundle_type == "dmg" }}
+      if: ${{ matrix.bundle_type == 'dmg' }}
       with:
         input: ./build/${{ matrix.target_os }}
         output: ./build/${{ env.DEFOLD_PROJECT_NAME}}-${{ matrix.target_arch }}-${{ matrix.target_os }}.dmg
 
     - uses: actions/upload-artifact@v3
-      if: ${{ matrix.bundle_type == "apk" }}
+      if: ${{ matrix.bundle_type == 'apk' }}
       with:
         name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.tgz
         path: ./build/${{ matrix.target_os }}/${{ env.DEFOLD_PROJECT_NAME}}/${{ env.DEFOLD_PROJECT_NAME }}.apk
 
     - uses: actions/upload-artifact@v3
-      if: ${{ matrix.bundle_type == "ipa" }}
+      if: ${{ matrix.bundle_type == 'ipa' }}
       with:
         name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.tgz
         path: ./build/${{ matrix.target_os }}/${{ env.DEFOLD_PROJECT_NAME }}/${{ env.DEFOLD_PROJECT_NAME}}.ipa
