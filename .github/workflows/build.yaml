@@ -12,49 +12,50 @@ on:
 
 jobs:
   build:
-    matrix:
-      host_os: []
-      target_os: []
-      target_arch: []
-      architectures: []
-      bundle_type: []
+    strategy:
+      matrix:
+        host_os: []
+        target_os: []
+        target_arch: []
+        architectures: []
+        bundle_type: []
 
-      include:
-      - host_os: ubuntu-latest
-        target_os: linux
-        target_arch: x86_64
-        architectures: x86_64-linux
-        bundle_type: tgz
-      - host_os: ubuntu-latest
-        target_os: win32
-        target_arch: x86_64
-        architectures: x86_64-win32
-        bundle_type: tgz
-      - host_os: ubuntu-latest
-        target_os: win32
-        target_arch: x86
-        architectures: x86-win32
-        bundle_type: zip
-      - host_os: ubuntu-latest
-        target_os: android
-        target_arch: arm64
-        architectures: arm64-android,armv7-android
-        bundle_type: apk
-      - host_os: ubuntu-latest
-        target_os: web
-        target_arch: wasm
-        architectures: wasm-web
-        bundle_type: tgz
-      - host_os: macos-latest
-        target_os: darwin
-        target_arch: x86_64
-        architectures: x86_64-darwin
-        bundle_type: dmg
-      - host_os: macos-latest
-        target_os: darwin
-        target_arch: arm64
-        architectures: arm64-darwin
-        bundle_type: ipa
+        include:
+        - host_os: ubuntu-latest
+          target_os: linux
+          target_arch: x86_64
+          architectures: x86_64-linux
+          bundle_type: tgz
+        - host_os: ubuntu-latest
+          target_os: win32
+          target_arch: x86_64
+          architectures: x86_64-win32
+          bundle_type: tgz
+        - host_os: ubuntu-latest
+          target_os: win32
+          target_arch: x86
+          architectures: x86-win32
+          bundle_type: zip
+        - host_os: ubuntu-latest
+          target_os: android
+          target_arch: arm64
+          architectures: arm64-android,armv7-android
+          bundle_type: apk
+        - host_os: ubuntu-latest
+          target_os: web
+          target_arch: wasm
+          architectures: wasm-web
+          bundle_type: tgz
+        - host_os: macos-latest
+          target_os: darwin
+          target_arch: x86_64
+          architectures: x86_64-darwin
+          bundle_type: dmg
+        - host_os: macos-latest
+          target_os: darwin
+          target_arch: arm64
+          architectures: arm64-darwin
+          bundle_type: ipa
     runs-on: ${{ matrix.host_os }}
     steps:
     - uses: actions/checkout@v3
