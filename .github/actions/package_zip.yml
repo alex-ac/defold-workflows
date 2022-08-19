@@ -1,0 +1,33 @@
+name: Package into .zip archive and publish artifact.
+inputs:
+  input:
+    description: Path to the input directory.
+    required: true
+  output:
+    description: Path to the output file.
+    required: true
+outputs:
+  artifact_name:
+    description: Name of the uploaded artifact.
+    value: ${{ steps.package_zip.outputs.artifact_name }}
+
+runs:
+  using: composite
+  steps:
+  - id: package_zip
+    run: |
+      artifact_name=`basename "${{ inputs.output }}"`
+      outdir=$(cd `dirname "${{inputs.output }}"`; pwd)
+      output=${outdir}/${artifact_name}
+
+      pushd "${{ inputs.input }}
+      zip "${output}" .
+      popd
+
+      echo "::set-output name=artifact_name=${artifact_name}"
+
+  - uses: actions/upload-artifact@v3
+    with:
+      name: ${{ steps.package_zip.outputs.artifact_name }}
+      path: ${{ inputs.output }}
+

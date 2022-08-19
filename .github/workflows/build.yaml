@@ -1,7 +1,131 @@
-name: Build game archive
-
 on:
   workflow_call:
     inputs:
+      project_path:
+        description: Path to the project in the repository.
+        default: .
+      defold_version:
+        description: The engine hash or release channel to download.
+        default: stable
 
 jobs:
+  matrix:
+    host_os: []
+    target_os: []
+    target_arch: []
+    architectures: []
+    bundle_type: []
+
+    include:
+    - host_os: ubuntu-latest
+      target_os: linux
+      target_arch: x86_64
+      architectures: x86_64-linux
+      bundle_type: tgz
+    - host_os: ubuntu-latest
+      target_os: win32
+      target_arch: x86_64
+      architectures: x86_64-win32
+      bundle_type: tgz
+    - host_os: ubuntu-latest
+      target_os: win32
+      target_arch: x86
+      architectures: x86-win32
+      bundle_type: zip
+    - host_os: ubuntu-latest
+      target_os: android
+      target_arch: arm64
+      architectures: arm64-android,armv7-android
+      bundle_type: apk
+    - host_os: ubuntu-latest
+      target_os: web
+      target_arch: wasm
+      architectures: wasm-web
+      bundle_type: tgz
+    - host_os: macos-latest
+      target_os: darwin
+      target_arch: x86_64
+      architectures: x86_64-darwin
+      bundle_type: dmg
+    - host_os: macos-latest
+      target_os: darwin
+      target_arch: arm64
+      architectures: arm64-darwin
+      bundle_type: ipa
+  build:
+    runs-on: ${{ matrix.host_os }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repo: alex-ac/defold-workflows
+
+    - uses: actions/checkout@v3
+      with:
+        path: ./src/
+
+    - uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+
+    - uses: dapetcu21/setup-defold@v3.0.2
+      with:
+        sha1: ${{ inputs.defold_version }}
+
+    - id: detect_project_name
+      uses: .github/actions/detect_project_name.yml
+      with:
+        project_path: ./src/${{ inputs.project_path }}
+
+    - uses: .github/actions/bob.yml
+      timeout-minutes: 5
+      with:
+        input: ./src/${{ inputs.project_path }}
+        output: ./build/default
+        action: resolve
+
+    - uses: .github/actions/bob.yml
+      timeout-minutes: 5
+      with:
+        input: ./src/${{ inputs.project_path }}
+        output: ./build/default
+        action: build
+
+    - uses: .github/actions/bob.yml
+      timeout-minutes: 5
+      with:
+        inputs: ./src/${{ inputs.project_path }}
+        output: ./build/default
+        bundle_output: ./build/${{ matrix.target_os }}
+        platform: ${{ matrix.target_arch }}-${{ matrix.target_os }}
+        architectures: ${{ matrix.architectures }}
+        action: bundle
+
+    - uses: .github/actions/package_tgz.yml
+      if: ${{ matrix.bundle_type == "tgz" }}
+      with:
+        input: ./build/${{ matrix.target_os }}
+        output: ./build/${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.tgz
+
+    - uses: .github/actions/package_zip.yml
+      if: ${{ matrix.bundle_type == "zip" }}
+      with:
+        input: ./build/${{ matrix.target_os }}
+        output: ./build/${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.tgz
+
+    - uses: .github/actions/package_dmg.yml
+      if: ${{ matrix.bundle_type == "dmg" }}
+      with:
+        input: ./build/${{ matrix.target_os }}
+        output: ./build/${{ env.DEFOLD_PROJECT_NAME}}-${{ matrix.target_arch }}-${{ matrix.target_os }}.dmg
+
+    - uses: actions/upload-artifact@v3
+      if: ${{ matrix.bundle_type == "apk" }}
+      with:
+        name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.tgz
+        path: ./build/${{ matrix.target_os }}/${{ env.DEFOLD_PROJECT_NAME}}/${{ env.DEFOLD_PROJECT_NAME }}.apk
+
+    - uses: actions/upload-artifact@v3
+      if: ${{ matrix.bundle_type == "ipa" }}
+      with:
+        name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.tgz
+        path: ./build/${{ matrix.target_os }}/${{ env.DEFOLD_PROJECT_NAME }}/${{ env.DEFOLD_PROJECT_NAME}}.ipa

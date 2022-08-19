@@ -1,0 +1,34 @@
+name: Package into .dmg image and publish artifact.
+inputs:
+  input:
+    description: Path to the input directory.
+    required: true
+  output:
+    description: Path to the output file.
+    required: true
+outputs:
+  artifact_name:
+    description: Name of the uploaded artifact.
+    value: ${{ steps.package_dmg.outputs.artifact_name }}
+
+runs:
+  using: composite
+  steps:
+  - id: package_dmg
+    run: |
+      ln -sf /Applications "${{ inputs.input }}/Applications"
+      hdiutil create -format UDZO \
+          -srcfolder "${{ inputs.input }}" \
+          -volname "${DEFOLD_PROJECT_NAME}" \
+          "${{ inputs.output }}"
+
+      artifact_name=`basename "${{ inputs.output }}"`
+
+      echo "::set-output name=artifact_name=${artifact_name}"
+
+  - uses: actions/upload-artifact@v3
+    with:
+      name: ${{ steps.package_zip.outputs.artifact_name }}
+      path: ${{ inputs.output }}
+
+
