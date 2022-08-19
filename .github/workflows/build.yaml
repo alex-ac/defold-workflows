@@ -3,8 +3,10 @@ on:
     inputs:
       project_path:
         description: Path to the project in the repository.
+        type: string
         default: .
       defold_version:
+        type: string
         description: The engine hash or release channel to download.
         default: stable
 
