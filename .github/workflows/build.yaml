@@ -14,18 +14,13 @@ jobs:
   build:
     strategy:
       matrix:
-        host_os: []
-        target_os: []
-        target_arch: []
-        architectures: []
-        bundle_type: []
+        host_os: [ 'ubuntu-latest' ]
+        target_os: [ 'linux' ]
+        target_arch: [ 'x86_64' ]
+        architectures: [ 'x86_64-linux' ]
+        bundle_type: [ 'tgz' ]
 
         include:
-        - host_os: ubuntu-latest
-          target_os: linux
-          target_arch: x86_64
-          architectures: x86_64-linux
-          bundle_type: tgz
         - host_os: ubuntu-latest
           target_os: win32
           target_arch: x86_64
