@@ -38,6 +38,7 @@ runs:
       case "${{ inputs.action }}" in
       build)
         BOB_ARGS+=( --archive )
+        ;;
       bundle)
         BOB_ARGS+=(
           --bundle_output "${{ inputs.bundle_output }}"
