@@ -21,7 +21,7 @@ runs:
       outdir=$(cd `dirname "${{inputs.output }}"`; pwd)
       output=${outdir}/${artifact_name}
 
-      pushd "${{ inputs.input }}
+      pushd "${{ inputs.input }}"
       zip "${output}" .
       popd
 
