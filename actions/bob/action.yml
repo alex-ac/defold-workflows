@@ -31,7 +31,6 @@ runs:
       BOB_ARGS=(
         --verbose
         --root "${{ inputs.input }}"
-        --input "${{ inputs.input }}"
         --output "${{ inputs.output }}"
         ${{ inputs.args }}
       )
