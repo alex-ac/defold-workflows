@@ -14,7 +14,7 @@ runs:
     shell: bash
     run: |
       python3 "${{ github.action_path }}/detect_project_name.py" \
-          "${{ input.project_path }}"
+          "${{ inputs.project_path }}"
   - shell: bash
     run: |
       echo "DEFOLD_PROJECT_NAME=${{ steps.detect_project_name.outputs.project_name }}" >> "${GITHUB_ENV}"
