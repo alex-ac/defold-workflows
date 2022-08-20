@@ -25,11 +25,11 @@ runs:
 
       artifact_name=`basename "${{ inputs.output }}"`
 
-      echo "::set-output name=artifact_name=${artifact_name}"
+      echo "artifact_name=${artifact_name}" >> "${GITHUB_ENV}"
 
   - uses: actions/upload-artifact@v3
     with:
-      name: ${{ steps.package_zip.outputs.artifact_name }}
+      name: ${{ env.artifact_name }}
       path: ${{ inputs.output }}
 
 
