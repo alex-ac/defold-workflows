@@ -38,7 +38,7 @@ jobs:
           bundle_type: apk
         - host_os: ubuntu-latest
           target_os: web
-          target_arch: wasm
+          target_arch: js
           architectures: wasm-web
           bundle_type: tgz
         - host_os: macos-latest
