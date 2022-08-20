@@ -17,9 +17,11 @@ Usage:
 name: CI
 on:
   push:
-  - master
+    branches:
+    - master
   pull_request:
-  - master
+    branches:
+    - master
 jobs:
   defold:
     uses: alex-ac/defold-workflows/.github/workflows/build.yaml@v1.0.0
