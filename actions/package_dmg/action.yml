@@ -15,6 +15,7 @@ runs:
   using: composite
   steps:
   - id: package_dmg
+    shell: bash
     run: |
       ln -sf /Applications "${{ inputs.input }}/Applications"
       hdiutil create -format UDZO \

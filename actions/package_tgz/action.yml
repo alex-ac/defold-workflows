@@ -15,6 +15,7 @@ runs:
   using: composite
   steps:
   - id: package_tgz
+    shell: bash
     run: |
       tar -cvf "${{ inputs.output }}" -C "${{ inputs.input }}" .
 

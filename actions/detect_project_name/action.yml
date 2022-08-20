@@ -11,8 +11,10 @@ runs:
   using: composite
   steps:
   - id: detect_project_name
+    shell: bash
     run: |
       python3 "${{ github.action_path }}/detect_project_name.py" \
           "${{ input.project_path }}"
-  - run: |
+  - shell: bash
+    run: |
       echo "DEFOLD_PROJECT_NAME=${{ steps.detect_project_name.outputs.project_name }}" >> "${GITHUB_ENV}"
