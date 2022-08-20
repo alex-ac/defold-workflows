@@ -41,7 +41,7 @@ runs:
         ;;
       bundle)
         BOB_ARGS+=(
-          --bundle_output "${{ inputs.bundle_output }}"
+          --bundle-output "${{ inputs.bundle_output }}"
           --platform "${{ inputs.platform }}"
           --architectures "${{ inputs.architectures }}"
         )
