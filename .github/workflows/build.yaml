@@ -33,7 +33,7 @@ jobs:
           bundle_type: zip
         - host_os: ubuntu-latest
           target_os: android
-          target_arch: arm64
+          target_arch: armv7
           architectures: arm64-android,armv7-android
           bundle_type: apk
         - host_os: ubuntu-latest
