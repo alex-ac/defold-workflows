@@ -52,4 +52,4 @@ runs:
 
       BOB_ARGS+=( "${{ inputs.action }}" )
 
-      java -jar "${BOB}" "${BOB_ARGS[*]}"
+      java -jar "${BOB}" "${BOB_ARGS[@]}"
