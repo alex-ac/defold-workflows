@@ -92,7 +92,7 @@ jobs:
     - uses: ./actions/bob
       timeout-minutes: 5
       with:
-        inputs: ./src/${{ inputs.project_path }}
+        input: ./src/${{ inputs.project_path }}
         output: ./build/default
         bundle_output: ./build/${{ matrix.target_os }}
         platform: ${{ matrix.target_arch }}-${{ matrix.target_os }}
