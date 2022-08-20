@@ -127,4 +127,4 @@ jobs:
       if: ${{ matrix.bundle_type == 'ipa' }}
       with:
         name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.ipa
-        path: ./build/${{ matrix.target_os }}/${{ env.DEFOLD_PROJECT_NAME }}/${{ env.DEFOLD_PROJECT_NAME}}.ipa
+        path: ./build/${{ matrix.target_os }}/${{ env.DEFOLD_PROJECT_NAME}}.ipa
