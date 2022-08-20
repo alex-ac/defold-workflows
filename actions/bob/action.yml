@@ -28,27 +28,27 @@ runs:
   - shell: bash
     run: |
       declare -a BOB_ARGS
-      BOB_ARGS=((
+      BOB_ARGS=(
         --verbose
         --input "${{ inputs.input }}"
         --output "${{ inputs.output }}"
         ${{ inputs.args }}
-      ))
+      )
 
       case "${{ inputs.action }}" in
       build)
-        BOB_ARGS+=(( --archive ))
+        BOB_ARGS+=( --archive )
       bundle)
-        BOB_ARGS+=((
+        BOB_ARGS+=(
           --bundle_output "${{ inputs.bundle_output }}"
           --platform "${{ inputs.platform }}"
           --architectures "${{ inputs.architectures }}"
-        ))
+        )
         ;;
       *)
         ;;
       esac
 
-      BOB_ARGS+=(( "${{ inputs.action }}" ))
+      BOB_ARGS+=( "${{ inputs.action }}" )
 
       java -jar "${BOB}" "${BOB_ARGS[*]}"
