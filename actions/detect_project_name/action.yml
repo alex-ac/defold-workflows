@@ -14,4 +14,5 @@ runs:
     shell: bash
     run: |
       python3 "${{ github.action_path }}/detect_project_name.py" \
-          "${{ inputs.project_path }}"
+          "${{ inputs.project_path }}" \
+          --append-to "${GITHUB_ENV}"
