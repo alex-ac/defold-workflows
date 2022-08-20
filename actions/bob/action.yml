@@ -49,6 +49,6 @@ runs:
         ;;
       esac
 
-      BOB_ARGS+=(( "${{inputs.action}" ))
+      BOB_ARGS+=(( "${{ inputs.action }}" ))
 
       java -jar "${BOB}" "${BOB_ARGS[*]}"
