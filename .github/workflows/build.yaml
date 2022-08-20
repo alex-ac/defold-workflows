@@ -25,7 +25,7 @@ jobs:
           target_os: win32
           target_arch: x86_64
           architectures: x86_64-win32
-          bundle_type: tgz
+          bundle_type: zip
         - host_os: ubuntu-latest
           target_os: win32
           target_arch: x86
