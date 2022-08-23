@@ -9,6 +9,15 @@ on:
         type: string
         description: The engine hash or release channel to download.
         default: stable
+    secrets:
+      email:
+        type: string
+        required: false
+        description: Email for cloud-builder.
+      auth:
+        type: string
+        required: false
+        description: Auth token for cloud-builder.
 
 jobs:
   build:
@@ -80,6 +89,8 @@ jobs:
       with:
         input: ./src/${{ inputs.project_path }}
         output: ./build/default
+        email: ${{ secrets.email }}
+        auth: ${{ secrets.auth }}
         action: resolve
 
     - uses: ./actions/bob
@@ -87,6 +98,8 @@ jobs:
       with:
         input: ./src/${{ inputs.project_path }}
         output: ./build/default
+        email: ${{ secrets.email }}
+        auth: ${{ secrets.auth }}
         action: build
 
     - uses: ./actions/bob
@@ -97,6 +110,8 @@ jobs:
         bundle_output: ./build/${{ matrix.target_os }}
         platform: ${{ matrix.target_arch }}-${{ matrix.target_os }}
         architectures: ${{ matrix.architectures }}
+        email: ${{ secrets.email }}
+        auth: ${{ secrets.auth }}
         action: bundle
 
     - uses: ./actions/package_tgz

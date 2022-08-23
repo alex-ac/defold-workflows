@@ -21,6 +21,14 @@ inputs:
   bundle_output:
     type: string
     description: Path for the bundle output.
+  email:
+    type: string
+    required: false
+    description: Email for cloud-builder.
+  auth:
+    type: string
+    required: false
+    description: Auth for cloud-builder.
 
 runs:
   using: composite
@@ -34,6 +42,16 @@ runs:
         --output "${{ inputs.output }}"
         ${{ inputs.args }}
       )
+
+      if [ -n "${{ inputs.email }}" ]; then
+        if [ -z "${{ inputs.auth }}" ]; then
+          echo '::error title="Configuration Issue"::Both `email` and `auth` should be provided at the same time.'
+        fi
+        BOB_ARGS+=(
+          --email "${{ inputs.email }}"
+          --auth "${{ inputs.auth }}"
+        )
+      fi
 
       case "${{ inputs.action }}" in
       build)
