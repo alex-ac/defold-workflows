@@ -9,6 +9,10 @@ on:
         type: string
         description: The engine hash or release channel to download.
         default: stable
+      build_server:
+        type: string
+        description: The cloud build server to use.
+        required: false
     secrets:
       email:
         type: string
@@ -89,6 +93,7 @@ jobs:
       with:
         input: ./src/${{ inputs.project_path }}
         output: ./build/default
+        build_server: ${{ inputs.build_server }}
         email: ${{ secrets.email }}
         auth: ${{ secrets.auth }}
         action: resolve
@@ -98,6 +103,7 @@ jobs:
       with:
         input: ./src/${{ inputs.project_path }}
         output: ./build/default
+        build_server: ${{ inputs.build_server }}
         email: ${{ secrets.email }}
         auth: ${{ secrets.auth }}
         action: build
@@ -107,6 +113,7 @@ jobs:
       with:
         input: ./src/${{ inputs.project_path }}
         output: ./build/default
+        build_server: ${{ inputs.build_server }}
         bundle_output: ./build/${{ matrix.target_os }}
         platform: ${{ matrix.target_arch }}-${{ matrix.target_os }}
         architectures: ${{ matrix.architectures }}

@@ -21,6 +21,10 @@ inputs:
   bundle_output:
     type: string
     description: Path for the bundle output.
+  build_server:
+    type: string
+    description: Address of the cloud build server.
+    required: false
   email:
     type: string
     required: false
@@ -42,6 +46,12 @@ runs:
         --output "${{ inputs.output }}"
         ${{ inputs.args }}
       )
+
+      if [ -n "${{ inputs.build_server }}" ]; then
+        BOB_ARGS+=(
+          --build-server "${{ inputs.build_server }}"
+        )
+      fi
 
       if [ -n "${{ inputs.email }}" ]; then
         if [ -z "${{ inputs.auth }}" ]; then
