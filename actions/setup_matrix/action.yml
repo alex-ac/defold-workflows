@@ -48,4 +48,4 @@ runs:
     id: setup_matrix
     env:
       INPUTS: ${{ toJSON(inputs) }}
-    run: python3 ./action/setup_matrix/setup_matrix.py
+    run: python3 "${{ github.action_path }}/setup_matrix.py"
