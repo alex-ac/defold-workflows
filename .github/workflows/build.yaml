@@ -13,6 +13,10 @@ on:
         type: string
         description: The cloud build server to use.
         required: false
+      settings:
+        type: string
+        description: Comma-separated list of settings files.
+        required: false
 
       bundle_x86_64_linux:
         type: boolean
@@ -107,3 +111,4 @@ jobs:
         platform: ${{ matrix.platform }}
         architectures: ${{ matrix.architectures }}
         bundle_type: ${{ matrix.bundle_type }}
+        settings: ${{ inputs.settings }}

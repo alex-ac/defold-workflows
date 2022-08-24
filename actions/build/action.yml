@@ -33,6 +33,10 @@ inputs:
     type: string
     required: true
     description: Bundle type for packaging.
+  settings:
+    type: string
+    required: false
+    description: Comma-separated list of settings files to merge into project.
 
 runs:
   using: composite
@@ -58,6 +62,7 @@ runs:
       build_server: ${{ inputs.build_server }}
       email: ${{ inputs.email }}
       auth: ${{ inputs.auth }}
+      settings: ${{ inputs.settings }}
       action: resolve
 
   - uses: ./actions/bob
@@ -67,6 +72,7 @@ runs:
       build_server: ${{ inputs.build_server }}
       email: ${{ inputs.email }}
       auth: ${{ inputs.auth }}
+      settings: ${{ inputs.settings }}
       action: build
 
   - uses: ./actions/bob
@@ -79,6 +85,7 @@ runs:
       architectures: ${{ inputs.architectures }}
       email: ${{ inputs.email }}
       auth: ${{ inputs.auth }}
+      settings: ${{ inputs.settings }}
       action: bundle
 
   - uses: ./actions/package_tgz

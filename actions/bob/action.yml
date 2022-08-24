@@ -33,6 +33,10 @@ inputs:
     type: string
     required: false
     description: Auth for cloud-builder.
+  settings:
+    type: string
+    required: false
+    description: Comma-separated list of settings files to merge into project.
 
 runs:
   using: composite
@@ -77,6 +81,12 @@ runs:
       *)
         ;;
       esac
+
+      if [ -n "${{ inputs.settings }}" ]; then
+        BOB_ARGS+=(
+          --settings "${{ inputs.settings }}"
+        )
+      fi
 
       BOB_ARGS+=( "${{ inputs.action }}" )
 
