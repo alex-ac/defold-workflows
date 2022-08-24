@@ -85,7 +85,7 @@ jobs:
   build:
     needs: setup_matrix
     strategy:
-      matrix: ${{ jobs.setup_matrix.outputs.matrix }}
+      matrix: ${{ needs.setup_matrix.outputs.matrix }}
 
     runs-on: ${{ matrix.host_os }}
     steps:
