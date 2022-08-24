@@ -70,6 +70,7 @@ jobs:
         repository: alex-ac/defold-workflows
 
     - uses: ./actions/setup_matrix
+      id: setup_matrix
       with:
         bundle_x86_64_linux: ${{ inputs.bundle_x86_64_linux }}
         bundle_x86_64_win: ${{ inputs.bundle_x86_64_win }}
