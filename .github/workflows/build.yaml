@@ -73,6 +73,7 @@ jobs:
         path: ./src/
 
     - uses: ./actions/build
+      timeout-minutes: 10
       with:
         project_path: ./src/${{ inputs.project_path }}
         output: ./build/default

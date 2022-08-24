@@ -48,7 +48,6 @@ runs:
       project_path: ${{ inputs.project_path }}
 
   - uses: ./actions/bob
-    timeout-minutes: 5
     with:
       input: .${{ inputs.project_path }}
       output: ${{ inputs.output }}/default
@@ -58,7 +57,6 @@ runs:
       action: resolve
 
   - uses: ./actions/bob
-    timeout-minutes: 5
     with:
       input: ${{ inputs.project_path }}
       output: ${{ inputs.output }}/default
@@ -68,7 +66,6 @@ runs:
       action: build
 
   - uses: ./actions/bob
-    timeout-minutes: 5
     with:
       input: ${{ inputs.project_path }}
       output: ${{ inputs.output }}/default
