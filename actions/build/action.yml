@@ -29,6 +29,10 @@ inputs:
     type: string
     required: false
     description: Auth for cloud-builder.
+  bundle_type:
+    type: string
+    required: true
+    description: Bundle type for packaging.
 
 runs:
   using: composite
