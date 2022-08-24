@@ -6,7 +6,7 @@ inputs:
     default: .
     description: Path to the defold project.
   output:
-    default: build/defold
+    default: ./build
     description: Path for the build output.
   args:
     type: string
@@ -109,4 +109,4 @@ runs:
     if: inputs.bundle_type == 'ipa'
     with:
       name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ inputs.platform }}.${{ inputs.bundle_type }}
-      path: ${{ inputs.output }}/${{ inputs.platform }}/${{ env.DEFOLD_PROJECT_NAME}}.${{ inputs.bundle }}
+      path: ${{ inputs.output }}/${{ inputs.platform }}/${{ env.DEFOLD_PROJECT_NAME}}.${{ inputs.bundle_type }}

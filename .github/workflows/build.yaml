@@ -100,7 +100,7 @@ jobs:
       timeout-minutes: 10
       with:
         project_path: ./src/${{ inputs.project_path }}
-        output: ./build/default
+        output: ./build
         build_server: ${{ inputs.build_server }}
         email: ${{ secrets.email }}
         auth: ${{ secrets.auth }}
