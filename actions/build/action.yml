@@ -52,8 +52,8 @@ runs:
       input: .${{ inputs.project_path }}
       output: ${{ inputs.output }}/default
       build_server: ${{ inputs.build_server }}
-      email: ${{ secrets.email }}
-      auth: ${{ secrets.auth }}
+      email: ${{ inputs.email }}
+      auth: ${{ inputs.auth }}
       action: resolve
 
   - uses: ./actions/bob
@@ -61,8 +61,8 @@ runs:
       input: ${{ inputs.project_path }}
       output: ${{ inputs.output }}/default
       build_server: ${{ inputs.build_server }}
-      email: ${{ secrets.email }}
-      auth: ${{ secrets.auth }}
+      email: ${{ inputs.email }}
+      auth: ${{ inputs.auth }}
       action: build
 
   - uses: ./actions/bob
