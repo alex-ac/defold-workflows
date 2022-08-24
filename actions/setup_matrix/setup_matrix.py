@@ -39,7 +39,11 @@ def run(argv=None):
     parser = argparse.ArgumentParser()
     _ = parser.parse_args(argv)
 
-    inputs = Inputs(**json.loads(os.environ['INPUTS']))
+    inputs = Inputs(**{
+        key: {'true': True, 'false': False}[value]
+                if isinstance(value, str) else value
+        for key, value in json.loads(os.environ['INPUTS']).items()
+    })
 
     variants: List[MatrixItem] = []
     
