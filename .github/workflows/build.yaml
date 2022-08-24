@@ -74,79 +74,12 @@ jobs:
       with:
         path: ./src/
 
-    - uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '11'
-
-    - uses: dapetcu21/setup-defold@v3.0.2
-      with:
-        sha1: ${{ inputs.defold_version }}
-
-    - id: detect_project_name
-      uses: ./actions/detect_project_name
+    - uses: ./actions/build
       with:
         project_path: ./src/${{ inputs.project_path }}
-
-    - uses: ./actions/bob
-      timeout-minutes: 5
-      with:
-        input: ./src/${{ inputs.project_path }}
         output: ./build/default
         build_server: ${{ inputs.build_server }}
         email: ${{ secrets.email }}
         auth: ${{ secrets.auth }}
-        action: resolve
-
-    - uses: ./actions/bob
-      timeout-minutes: 5
-      with:
-        input: ./src/${{ inputs.project_path }}
-        output: ./build/default
-        build_server: ${{ inputs.build_server }}
-        email: ${{ secrets.email }}
-        auth: ${{ secrets.auth }}
-        action: build
-
-    - uses: ./actions/bob
-      timeout-minutes: 5
-      with:
-        input: ./src/${{ inputs.project_path }}
-        output: ./build/default
-        build_server: ${{ inputs.build_server }}
-        bundle_output: ./build/${{ matrix.target_os }}
         platform: ${{ matrix.target_arch }}-${{ matrix.target_os }}
         architectures: ${{ matrix.architectures }}
-        email: ${{ secrets.email }}
-        auth: ${{ secrets.auth }}
-        action: bundle
-
-    - uses: ./actions/package_tgz
-      if: ${{ matrix.bundle_type == 'tgz' }}
-      with:
-        input: ./build/${{ matrix.target_os }}
-        output: ./build/${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.tgz
-
-    - uses: ./actions/package_zip
-      if: ${{ matrix.bundle_type == 'zip' }}
-      with:
-        input: ./build/${{ matrix.target_os }}
-        output: ./build/${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.zip
-
-    - uses: ./actions/package_dmg
-      if: ${{ matrix.bundle_type == 'dmg' }}
-      with:
-        input: ./build/${{ matrix.target_os }}
-        output: ./build/${{ env.DEFOLD_PROJECT_NAME}}-${{ matrix.target_arch }}-${{ matrix.target_os }}.dmg
-
-    - uses: actions/upload-artifact@v3
-      if: ${{ matrix.bundle_type == 'apk' }}
-      with:
-        name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.apk
-        path: ./build/${{ matrix.target_os }}/${{ env.DEFOLD_PROJECT_NAME}}/${{ env.DEFOLD_PROJECT_NAME }}.apk
-
-    - uses: actions/upload-artifact@v3
-      if: ${{ matrix.bundle_type == 'ipa' }}
-      with:
-        name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.target_arch }}-${{ matrix.target_os }}.ipa
-        path: ./build/${{ matrix.target_os }}/${{ env.DEFOLD_PROJECT_NAME}}.ipa
