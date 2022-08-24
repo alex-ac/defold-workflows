@@ -73,15 +73,15 @@ jobs:
 
     - uses: ./actions/setup_matrix
       with:
-        bundle_x86_64_linux: ${{ bundle_x86_64_linux }}
-        bundle_x86_64_win: ${{ bundle_x86_64_win }}
-        bundle_x86_win: ${{ bundle_x86_win }}
-        bundle_x86_64_mac: ${{ bundle_x86_64_mac }}
-        bundle_arm64_ios: ${{ bundle_arm64_ios }}
-        bundle_armv7_android: ${{ bundle_armv7_android }}
-        bundle_arm64_android: ${{ bundle_arm64_android }}
-        bundle_wasm_web: ${{ bundle_wasm_web }}
-        bundle_js_web: ${{ bundle_js_web }}
+        bundle_x86_64_linux: ${{ inputs.bundle_x86_64_linux }}
+        bundle_x86_64_win: ${{ inputs.bundle_x86_64_win }}
+        bundle_x86_win: ${{ inputs.bundle_x86_win }}
+        bundle_x86_64_mac: ${{ inputs.bundle_x86_64_mac }}
+        bundle_arm64_ios: ${{ inputs.bundle_arm64_ios }}
+        bundle_armv7_android: ${{ inputs.bundle_armv7_android }}
+        bundle_arm64_android: ${{ inputs.bundle_arm64_android }}
+        bundle_wasm_web: ${{ inputs.bundle_wasm_web }}
+        bundle_js_web: ${{ inputs.bundle_js_web }}
   build:
     needs: setup_matrix
     strategy:
