@@ -1,39 +1,39 @@
 inputs:
   bundle_x86_64_linux:
     type: boolean
-    default: true
+    default: ${{ true }}
     description: Bundle for x86_64-linux (Linux)
   bundle_x86_64_win:
     type: boolean
-    default: true
+    default: ${{ true }}
     description: Bundle for x86_64-win32 (Windows).
   bundle_x86_win:
     type: boolean
-    default: true
+    default: ${{ true }}
     description: Bundle for x86-win32 (Legacy Windows).
   bundle_x86_64_mac:
     type: boolean
-    default: true
+    default: ${{ true }}
     description: Bundle for x86_64-darwin (MacOS).
   bundle_arm64_ios:
     type: boolean
-    default: true
+    default: ${{ true }}
     description: Bundle for x86_64-darwin (iOS).
   bundle_armv7_android:
     type: boolean
-    default: true
+    default: ${{ true }}
     description: Bundle for armv7-android (Legacy Android).
   bundle_arm64_android:
     type: boolean
-    default: true
+    default: ${{ true }}
     description: Bundle for arm64-android (Android).
   bundle_wasm_web:
     type: boolean
-    default: true
+    default: ${{ true }}
     description: Bundle for wasm-web (WebAssembly).
   bundle_js_web:
     type: boolean
-    default: false
+    default: ${{ false }}
     description: Bundle for js-web (JavaScript).
 
 outputs:
