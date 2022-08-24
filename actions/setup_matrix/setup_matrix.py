@@ -6,6 +6,8 @@ import argparse
 import sys
 import json
 
+from typing import List
+
 
 @dataclasses.dataclass(frozen=True)
 class Inputs:
@@ -31,7 +33,7 @@ class MatrixItem:
 
 @dataclasses.dataclass(frozen=True)
 class Matrix:
-    include: list[MatrixItem]
+    include: List[MatrixItem]
 
 
 def run(argv=None):
@@ -40,7 +42,7 @@ def run(argv=None):
 
     inputs = Inputs(**json.loads(os.environ['INPUTS']))
 
-    variants: list[MatrixItem] = []
+    variants: List[MatrixItem] = []
     
     if inputs.bundle_x86_64_linux:
         variants.append(MatrixItem(
