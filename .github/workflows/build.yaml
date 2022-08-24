@@ -48,7 +48,7 @@ on:
         description: Bundle for wasm-web (WebAssembly).
       bundle_js_web:
         type: boolean
-        default: $i{{ false }}
+        default: ${{ false }}
         description: Bundle for js-web (JavaScript).
 
     secrets:
