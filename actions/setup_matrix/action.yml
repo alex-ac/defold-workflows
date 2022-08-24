@@ -35,11 +35,11 @@ inputs:
     type: boolean
     default: false
     description: Bundle for js-web (JavaScript).
+
 outputs:
   matrix:
-    description: 
-      description: A matrix for subsequent build job.
-      value: ${{ steps.setup_matrix.outputs.matrix }}
+    description: A matrix for subsequent build job.
+    value: ${{ steps.setup_matrix.outputs.matrix }}
 
 runs:
   using: composite
