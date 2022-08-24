@@ -104,5 +104,5 @@ jobs:
         build_server: ${{ inputs.build_server }}
         email: ${{ secrets.email }}
         auth: ${{ secrets.auth }}
-        platform: ${{ matrix.target_arch }}-${{ matrix.target_os }}
+        platform: ${{ matrix.platform }}
         architectures: ${{ matrix.architectures }}

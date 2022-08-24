@@ -25,8 +25,7 @@ class Inputs:
 @dataclasses.dataclass(frozen=True)
 class MatrixItem:
     host_os: str
-    target_os: str
-    target_arch: str
+    platform: str
     architectures: str
     bundle_type: str
 
@@ -47,8 +46,7 @@ def run(argv=None):
     if inputs.bundle_x86_64_linux:
         variants.append(MatrixItem(
             host_os='ubuntu-latest',
-            target_os='linux',
-            target_arch='x86_64',
+            platform='x86_64-linux',
             architectures='x86_64-linux',
             bundle_type='tgz',
         ))
@@ -56,8 +54,7 @@ def run(argv=None):
     if inputs.bundle_x86_64_win:
         variants.append(MatrixItem(
             host_os='ubuntu-latest',
-            target_os='win32',
-            target_arch='x86_64',
+            platform='x86_64-win32',
             architectures='x86_64-win32',
             bundle_type='zip',
         ))
@@ -65,8 +62,7 @@ def run(argv=None):
     if inputs.bundle_x86_win:
         variants.append(MatrixItem(
             host_os='ubuntu-latest',
-            target_os='win32',
-            target_arch='x86',
+            platform='x86-win32',
             architectures='x86-win32',
             bundle_type='zip',
         ))
@@ -74,8 +70,7 @@ def run(argv=None):
     if inputs.bundle_x86_64_mac:
         variants.append(MatrixItem(
             host_os='macos-latest',
-            target_os='darwin',
-            target_arch='x86_64',
+            platform='x86_64-darwin',
             architectures='x86_64-darwin',
             bundle_type='dmg',
         ))
@@ -83,8 +78,7 @@ def run(argv=None):
     if inputs.bundle_arm64_ios:
         variants.append(MatrixItem(
             host_os='macos-latest',
-            target_os='darwin',
-            target_arch='arm64',
+            platform='arm64-darwin',
             architectures='arm64-darwin',
             bundle_type='ipa',
         ))
@@ -98,8 +92,7 @@ def run(argv=None):
 
         variants.append(MatrixItem(
             host_os='ubuntu-latest',
-            target_os='android',
-            target_arch='armv7',
+            platform='armv7-android',
             architectures=','.join(architectures),
             bundle_type='apk',
         ))
@@ -107,8 +100,7 @@ def run(argv=None):
     if inputs.bundle_js_web:
         variants.append(MatrixItem(
             host_os='ubuntu-latest',
-            target_os='web',
-            target_arch='js',
+            platform='js-web',
             architectures='js-web',
             bundle_type='tgz',
         ))
@@ -116,8 +108,7 @@ def run(argv=None):
     if inputs.bundle_wasm_web:
         variants.append(MatrixItem(
             host_os='ubuntu-latest',
-            target_os='web',
-            target_arch='js',
+            platform='js-web',
             architectures='wasm-web',
             bundle_type='tgz',
         ))
