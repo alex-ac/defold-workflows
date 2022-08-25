@@ -3,6 +3,9 @@ inputs:
   project_path:
     default: .
     description: Path to the defold project
+  settings:
+    default:
+    description: Comma-separated list of settings files.
 outputs:
   project_name:
     description: The name of the project from game.project file.
@@ -13,6 +16,12 @@ runs:
   - id: detect_project_name
     shell: bash
     run: |
+      declare -a ARGS
+      ARGS=()
+      if [ -n "${{ inputs.settings }}" ]; then
+        ARGS+=( --settings "${{ inputs.settings }}" )
+      fi
       python3 "${{ github.action_path }}/detect_project_name.py" \
           "${{ inputs.project_path }}" \
-          --append-to "${GITHUB_ENV}"
+          --append-to "${GITHUB_ENV}" \
+          "${ARGS[@]}"

@@ -54,6 +54,7 @@ runs:
     uses: ./actions/detect_project_name
     with:
       project_path: ${{ inputs.project_path }}
+      settings: ${{ inputs.settings }}
 
   - uses: ./actions/bob
     with:
