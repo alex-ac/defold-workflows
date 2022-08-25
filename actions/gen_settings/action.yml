@@ -1,0 +1,41 @@
+description: |
+  Generate a settings file for a defold project.
+
+  Usage:
+
+  ```yaml
+  - use: alex-ac/defold-workflows/gen_settings@v2
+    env:
+      DEFOLD_SET_project_title: My Game Renamed
+      DEFOLD_SET_project_version: 1.2.3
+    with:
+      ouput: override.properties
+  ```
+
+  That will generate a `override.properties` file with the following content:
+
+  ```toml
+  [project]
+  title = My Game Renamed
+  version = 1.2.3
+  ```
+
+inputs:
+  output:
+    type: string
+    required: true
+    description: Path to the output file.
+  prefix:
+    type: string
+    default: DEFOLD_SET_
+    description: |
+      A prefix of env variables which will be considered as a value for config.
+
+runs:
+  using: composite
+  steps:
+  - shell: bash
+    run: |
+      python3 "${{ github.action_path }}/gen_settings.py" \
+          --prefix "${{ inputs.prefix }}" \
+          --output "${{ inputs.output }}"
