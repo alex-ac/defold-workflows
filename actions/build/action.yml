@@ -41,15 +41,6 @@ inputs:
 runs:
   using: composite
   steps:
-  - uses: actions/setup-java@v3
-    with:
-      distribution: 'temurin'
-      java-version: '11'
-
-  - uses: dapetcu21/setup-defold@v3.0.2
-    with:
-      sha1: ${{ inputs.defold_version }}
-
   - id: detect_project_name
     uses: ./actions/detect_project_name
     with:
