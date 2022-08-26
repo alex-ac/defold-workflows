@@ -10,7 +10,8 @@ inputs:
     description: Name of the defold project.
     required: true
   bundle_type:
-    description: Type of bundle to make: 'tgz', 'zip', 'dmg', 'ipa' or 'apk'.
+    description: |
+      Type of bundle to make. One of 'tgz', 'zip', 'dmg', 'ipa' or 'apk'.
     required: true
 outputs:
   artifact_name:
