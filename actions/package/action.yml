@@ -50,7 +50,7 @@ runs:
 
       def package_dmg(inputs) -> pathlib.Path:
           (inputs.input / 'Applications').symlink_to('/Applications')
-          output = (inputs.output / inputs.output_name).with_suffix('.dmg')
+          output = (inputs.output_dir / inputs.output_name).with_suffix('.dmg')
 
           toolkit.check_call([
               'hdiutil', 'create',
@@ -70,13 +70,13 @@ runs:
 
       def package_apk(inputs):
           apk = inputs.input / inputs.project_name / f'{inputs.project_name}.apk'
-          output = (inputs.output / inputs.output_name).with_suffix('.apk')
+          output = (inputs.output_dir / inputs.output_name).with_suffix('.apk')
           output.hardlink_to(apk)
           return output
 
       def package_ipa(inputs):
           ipa = inputs.input / f'{inputs.project_name }.ipa'
-          output = (inputs.output / inputs.output_name).with_suffix('.ipa')
+          output = (inputs.output_dir / inputs.output_name).with_suffix('.ipa')
           output.hardlink_to(inputs.ipa)
           return output
 
