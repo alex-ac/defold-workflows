@@ -54,9 +54,10 @@ runs:
 
       def package_archive(format):
           def package(inputs):
-              shutil.make_archive(
+              output = shutil.make_archive(
                   inputs.output.with_suffix(''),
                   format, root_dir=inputs.input, base_dir='.')
+              toolkit.debug(f'Packaged archive: {output}')
 
           return package
 
