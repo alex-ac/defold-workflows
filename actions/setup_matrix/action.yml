@@ -77,7 +77,7 @@ runs:
 
           @dataclasses.dataclass(frozen=True)
           class Matrix:
-              include: List[MatrixItem]
+              include: list[MatrixItem]
 
           inputs = Inputs.load()
 
