@@ -42,12 +42,12 @@ runs:
   using: composite
   steps:
   - id: detect_project_name
-    uses: alex-ac/defold-workflows/actions/detect_project_name@${{ github.action_ref }}
+    uses: alex-ac/defold-workflows/actions/detect_project_name@master
     with:
       project_path: ${{ inputs.project_path }}
       settings: ${{ inputs.settings }}
 
-  - uses: alex-ac/defold-workflows/actions/bob@${{ github.action_ref }}
+  - uses: alex-ac/defold-workflows/actions/bob@master
     with:
       input: .${{ inputs.project_path }}
       output: ${{ inputs.output }}/default
@@ -57,7 +57,7 @@ runs:
       settings: ${{ inputs.settings }}
       action: resolve
 
-  - uses: alex-ac/defold-workflows/actions/bob@${{ github.action_ref }}
+  - uses: alex-ac/defold-workflows/actions/bob@master
     with:
       input: ${{ inputs.project_path }}
       output: ${{ inputs.output }}/default
@@ -67,7 +67,7 @@ runs:
       settings: ${{ inputs.settings }}
       action: build
 
-  - uses: alex-ac/defold-workflows/actions/bob@${{ github.action_ref }}
+  - uses: alex-ac/defold-workflows/actions/bob@master
     with:
       input: ${{ inputs.project_path }}
       output: ${{ inputs.output }}/default
@@ -80,19 +80,19 @@ runs:
       settings: ${{ inputs.settings }}
       action: bundle
 
-  - uses: alex-ac/defold-workflows/actions/package_tgz@${{ github.action_ref }}
+  - uses: alex-ac/defold-workflows/actions/package_tgz@master
     if: inputs.bundle_type == 'tgz'
     with:
       input: ${{ inputs.output }}/${{ inputs.platform }}
       output: ${{ inputs.output }}/${{ env.DEFOLD_PROJECT_NAME }}-${{ inputs.platform }}.${{ inputs.bundle_type }}
 
-  - uses: alex-ac/defold-workflows/actions/package_zip@${{ github.action_ref }}
+  - uses: alex-ac/defold-workflows/actions/package_zip@master
     if: inputs.bundle_type == 'zip'
     with:
       input: ${{ inputs.output }}/${{ matrix.platform }}
       output: ${{ inputs.output }}//${{ env.DEFOLD_PROJECT_NAME }}-${{ inputs.platform }}.${{ inputs.bundle_type }}
 
-  - uses: alex-ac/defold-workflows/actions/package_dmg@${{ github.action_ref }}
+  - uses: alex-ac/defold-workflows/actions/package_dmg@master
     if: inputs.bundle_type == 'dmg'
     with:
       input: ${{ inputs.output }}/${{ inputs.platform }}
