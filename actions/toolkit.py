@@ -16,7 +16,7 @@ def _load_inputs(cls: Type[T], inputs: Any) -> T:
     args: Dict[str, Any] = {}
 
     for field in dataclasses.fields(cls):
-        value = inputs.get(f'INPUT_{field.name.upper()}', '').strip()
+        value = inputs.get(field.name, '').strip()
 
         if field.type is bool:
             value = field.type != 'false'
