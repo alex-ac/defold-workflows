@@ -12,12 +12,12 @@ outputs:
     value: ${{ steps.detect_project_name.outputs.project_name }}
 runs:
   using: composite
-  env:
-    INPUTS: ${{ toJSON(inputs)}}
-    PYTHONPATH: ${{ github.action_path }}/..
   steps:
   - id: detect_project_name
     shell: python
+    env:
+      INPUTS: ${{ toJSON(inputs)}}
+      PYTHONPATH: ${{ github.action_path }}/..
     run: |
       import configparser
       import pathlib
