@@ -70,7 +70,7 @@ runs:
           ipa.link_to(inputs.output)
 
       package = {
-          'tgz': package_archive('tgz'),
+          'tgz': package_archive('gztar'),
           'zip': package_archive('zip'),
           'dmg': package_dmg,
           'apk': package_apk,
