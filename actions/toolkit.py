@@ -39,6 +39,11 @@ def inputs(cls: Type[T]) -> Type[T]:
             inputs = inputs or json.loads(os.environ.get('INPUTS', '{}'))
             return _load_inputs(cls, inputs)
 
+    Inputs.__name__ = cls.__name__
+    Inputs.__module__ = cls.__module__
+
+    return Inputs
+
 
 def perror(title: str, message: str):
     print(f'::error title={title}::{message}')
