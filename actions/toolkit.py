@@ -62,14 +62,14 @@ def run(command: List[Union[str, pathlib.Path]], cwd: Optional[pathlib.Path] = N
     if cwd is None:
         cwd = pathlib.Path.cwd()
 
-    debug(f'{cwd} $ {" ".join(command)}')
+    debug(f'{cwd} $ {" ".join(str(arg) for arg in command)}')
     return subprocess.call(command, cwd=cwd)
 
 def check_call(command: List[Union[str, pathlib.Path]], cwd: Optional[pathlib.Path] = None):
     if cwd is None:
         cwd = pathlib.Path.cwd()
 
-    debug(f'{cwd} $ {" ".join(command)}')
+    debug(f'{cwd} $ {" ".join(str(arg) for arg in command)}')
     return subprocess.check_call(command, cwd=cwd)
 
 def set_output(name: str, value: str):
