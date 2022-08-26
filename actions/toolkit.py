@@ -32,7 +32,9 @@ def _load_inputs(cls: Type[T], inputs: Any) -> T:
 
 def inputs(cls: Type[T]) -> Type[T]:
 
-    @dataclasses.dataclass(frozen=True)
+    if not dataclasses.is_dataclass(cls):
+        cls = dataclasses.dataclass(frozen=True)(cls)
+
     class Inputs(cls):
         @classmethod
         def load(cls, inputs: Any = None) -> T:
