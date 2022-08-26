@@ -112,4 +112,4 @@ runs:
 
       bob_command.append(inputs.action)
 
-      sys.exit(subprocess.call(bob_command))
+      sys.exit(toolkit.run(bob_command))

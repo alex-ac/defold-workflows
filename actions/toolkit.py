@@ -1,8 +1,10 @@
 import dataclasses
 import os
+import pathlib
+import subprocess
 
 from typing import (
-    Type, TypeVar, Dict, Optional,
+    Type, TypeVar, Dict, Optional, Union, List,
 )
 
 
@@ -29,3 +31,10 @@ def inputs_from_env(cls: Type[T], env: Optional[Dict[str, str]] = None) -> T:
 
 def perror(title: str, message: str):
     print(f'::error title={title}::{message}')
+
+def run(command: List[Union[str, pathlib.Path]], cwd: Optional[pathlib.Path] = None):
+    if cwd is None:
+        cwd = pathlib.Path.cwd()
+
+    print(f'{cwd} $ {" ".join(command)}')
+    return subprocess.call(command, cwd=cwd)
