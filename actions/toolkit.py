@@ -65,6 +65,13 @@ def run(command: List[Union[str, pathlib.Path]], cwd: Optional[pathlib.Path] = N
     debug(f'{cwd} $ {" ".join(command)}')
     return subprocess.call(command, cwd=cwd)
 
+def check_call(command: List[Union[str, pathlib.Path]], cwd: Optional[pathlib.Path] = None):
+    if cwd is None:
+        cwd = pathlib.Path.cwd()
+
+    debug(f'{cwd} $ {" ".join(command)}')
+    return subprocess.check_call(command, cwd=cwd)
+
 def set_output(name: str, value: str):
     print(f'::set-output name={name}::{value}')
 
