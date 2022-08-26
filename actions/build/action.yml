@@ -17,6 +17,9 @@ inputs:
   architectures:
     type: string
     description: Comma-separated list of architectures to bundle for.
+  archive_name_platform:
+    type: string
+    description: Platform part of the artifact name.
   build_server:
     type: string
     description: Address of the cloud build server.
@@ -86,4 +89,4 @@ runs:
       project_name: ${{ env.DEFOLD_PROJECT_NAME }}
       bundle_type: ${{ inputs.bundle_type }}
       output_dir: ${{ inputs.output }}
-      output_name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ inputs.platform }}
+      output_name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ inputs.archive_name_platform }}

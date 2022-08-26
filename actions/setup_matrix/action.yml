@@ -77,6 +77,7 @@ runs:
           platform: str
           architectures: str
           bundle_type: str
+          archive_name_platform: str
 
 
       @dataclasses.dataclass(frozen=True)
@@ -93,6 +94,7 @@ runs:
               platform='x86_64-linux',
               architectures='x86_64-linux',
               bundle_type='tgz',
+              archive_name_platform='x86_64-linux',
           ))
 
       if inputs.bundle_x86_64_win:
@@ -101,6 +103,7 @@ runs:
               platform='x86_64-win32',
               architectures='x86_64-win32',
               bundle_type='zip',
+              archive_name_platform='x86_64-windows',
           ))
 
       if inputs.bundle_x86_win:
@@ -109,6 +112,7 @@ runs:
               platform='x86-win32',
               architectures='x86-win32',
               bundle_type='zip',
+              archive_name_platform='x86-windows',
           ))
 
       if inputs.bundle_x86_64_mac:
@@ -117,6 +121,7 @@ runs:
               platform='x86_64-darwin',
               architectures='x86_64-darwin',
               bundle_type='dmg',
+              archive_name_platform='x86_64-macos',
           ))
 
       if inputs.bundle_arm64_ios:
@@ -125,20 +130,25 @@ runs:
               platform='arm64-darwin',
               architectures='arm64-darwin',
               bundle_type='ipa',
+              archive_name_platform='arm64-ios',
           ))
 
       if inputs.bundle_armv7_android or inputs.bundle_arm64_android:
           architectures = []
+          archive_name_archs = []
           if inputs.bundle_armv7_android:
               architectures.append('armv7-android')
+              archive_name_archs.append('armv7')
           if inputs.bundle_arm64_android:
               architectures.append('arm64-android')
+              archive_name_archs.append('arm64')
 
           variants.append(MatrixItem(
               host_os='ubuntu-latest',
               platform='armv7-android',
               architectures=','.join(architectures),
               bundle_type='apk',
+              archive_name_platform='_'.join(archive_name_archs) + '-android',
           ))
 
       if inputs.bundle_js_web:
@@ -147,6 +157,7 @@ runs:
               platform='js-web',
               architectures='js-web',
               bundle_type='tgz',
+              archive_name_platform='js-web',
           ))
 
       if inputs.bundle_wasm_web:
@@ -155,6 +166,7 @@ runs:
               platform='js-web',
               architectures='wasm-web',
               bundle_type='tgz',
+              archive_name_platform='wasm-web',
           ))
 
       matrix = Matrix(variants)

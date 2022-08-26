@@ -113,5 +113,6 @@ jobs:
         auth: ${{ secrets.auth }}
         platform: ${{ matrix.platform }}
         architectures: ${{ matrix.architectures }}
+        archive_name_platform: ${{ matrix.archive_name_platform }}
         bundle_type: ${{ matrix.bundle_type }}
         settings: ${{ inputs.settings }}
