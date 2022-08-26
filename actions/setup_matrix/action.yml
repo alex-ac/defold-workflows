@@ -159,4 +159,4 @@ runs:
 
       matrix = Matrix(variants)
       toolkit.set_output(
-          'matrix', json.dumps(matrix, default=dataclasses.asdict()))
+          'matrix', json.dumps(matrix, default=dataclasses.asdict))
