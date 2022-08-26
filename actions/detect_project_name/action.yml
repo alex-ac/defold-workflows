@@ -38,8 +38,8 @@ runs:
       toolkit.debug(
           f'Loaded project.title from {project_file}: {project_name}')
 
-      if input.settings:
-          for path in map(pathlib.Path, input.settings.split(',')):
+      if inputs.settings:
+          for path in map(pathlib.Path, inputs.settings.split(',')):
               config = configparser.ConfigParser()
               config.read(config_path, encoding='utf-8')
               if config.has_option('project', 'title'):
