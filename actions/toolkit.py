@@ -17,7 +17,7 @@ def inputs_from_env(cls: Type[T], env: Optional[Dict[str, str]] = None) -> T:
     args: Dict[str, Any] = {}
 
     for field in dataclasses.fields(cls):
-        value = env.get(f'INPUT_{field.name}', '').strip()
+        value = env.get(f'INPUT_{field.name.upper()}', '').strip()
 
         if field.type is bool:
             value = field.type != 'false'
