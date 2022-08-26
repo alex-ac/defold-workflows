@@ -80,32 +80,9 @@ runs:
       settings: ${{ inputs.settings }}
       action: bundle
 
-  - uses: alex-ac/defold-workflows/actions/package_tgz@master
-    if: inputs.bundle_type == 'tgz'
+  - uses: alex-ac/defold-workflows/actions/package@master
     with:
       input: ${{ inputs.output }}/${{ inputs.platform }}
-      output: ${{ inputs.output }}/${{ env.DEFOLD_PROJECT_NAME }}-${{ inputs.platform }}.${{ inputs.bundle_type }}
-
-  - uses: alex-ac/defold-workflows/actions/package_zip@master
-    if: inputs.bundle_type == 'zip'
-    with:
-      input: ${{ inputs.output }}/${{ matrix.platform }}
-      output: ${{ inputs.output }}//${{ env.DEFOLD_PROJECT_NAME }}-${{ inputs.platform }}.${{ inputs.bundle_type }}
-
-  - uses: alex-ac/defold-workflows/actions/package_dmg@master
-    if: inputs.bundle_type == 'dmg'
-    with:
-      input: ${{ inputs.output }}/${{ inputs.platform }}
-      output: ${{ inputs.output }}/${{ env.DEFOLD_PROJECT_NAME}}-${{ inputs.platform }}.${{ inputs.bundle_type }}
-
-  - uses: actions/upload-artifact@v3
-    if: inputs.bundle_type == 'apk'
-    with:
-      name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ inputs.platform }}.${{ inputs.bundle_type }}
-      path: ${{ inputs.output }}/${{ inputs.platform }}/${{ env.DEFOLD_PROJECT_NAME}}/${{ env.DEFOLD_PROJECT_NAME }}.${{ inputs.bundle_type }}
-
-  - uses: actions/upload-artifact@v3
-    if: inputs.bundle_type == 'ipa'
-    with:
-      name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ inputs.platform }}.${{ inputs.bundle_type }}
-      path: ${{ inputs.output }}/${{ inputs.platform }}/${{ env.DEFOLD_PROJECT_NAME}}.${{ inputs.bundle_type }}
+      project_name: ${{ env.DEFOLD_PROJECT_NAME }}
+      bundle_type: ${{ inputs.bundle_type }}
+      output: ${{ inputs.output }}/${{ env.DEFOLD_PROJECT_NAME }}-${{ inputs.platform }}.${{ input.bundle_type }}

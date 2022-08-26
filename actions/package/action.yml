@@ -1,0 +1,84 @@
+name: Package and publish artifact.
+inputs:
+  input:
+    description: Path to the input directory.
+    required: true
+  output:
+    description: Path to the output file.
+    required: true
+  project_name:
+    description: Name of the defold project.
+    required: true
+  bundle_type:
+    description: Type of bundle to make: 'tgz', 'zip', 'dmg', 'ipa' or 'apk'.
+    required: true
+outputs:
+  artifact_name:
+    description: Name of the uploaded artifact.
+    value: ${{ steps.package.outputs.artifact_name }}
+
+runs:
+  using: composite
+  steps:
+  - id: package
+    shell: python
+    env:
+      INPUTS: ${{ toJSON(inputs) }}
+      PYTHONPATH: ${{ github.action_path }}/..
+    run: |
+      import toolkit
+
+      @toolkit.inputs
+      class Inputs:
+          input: pathlib.Path
+          output: pathlib.Path
+          project_name: str
+          bundle_type: bundle_type
+
+      inputs = Inputs.load()
+
+      def package_dmg(inputs) -> pathlib.Path:
+          applications = pathlib.Path('/Applications')
+          applications.symlink_to(inputs.input / 'Applications')
+
+          toolkit.check_call([
+              'hdiutil', 'create',
+              '-format', 'UDZO',
+              '-srcfolder', inputs.input,
+              '-volname', inputs.project_name,
+              inputs.output,
+          ])
+
+      def package_archive(format):
+          def package(inputs):
+              shutil.make_archive(
+                  inputs.output.name.with_suffix(''),
+                  format, root_dir=inputs.input, '.')
+
+          return package
+
+      def package_apk(inputs):
+          apk = inputs.input / inputs.project_name / f'{inputs.project_name}.apk'
+          apk.link_to(inputs.output)
+
+      def package_ipa(inputs):
+          ipa = inputs.input / f'{input.project_name }.ipa'
+          ipa.link_to(inputs.output)
+
+      package = {
+          'tgz': package_archive('tgz'),
+          'zip': package_archive('zip'),
+          'dmg': package_dmg,
+          'apk': package_apk,
+          'ipa': package_ipa,
+      }[inputs.bundle_type]
+
+      package(inputs)
+      if not code:
+          toolkit.set_env('artifact_name', inputs.output.name)
+          toolkit.set_output('artifact_name', inputs.output.name)
+
+  - uses: actions/upload-artifact@v3
+    with:
+      name: ${{ env.artifact_name }}
+      path: ${{ inputs.output }}
