@@ -89,8 +89,8 @@ runs:
       }[inputs.bundle_type]
 
       output = package(inputs)
-      toolkit.set_env('artifact_name', inputs.output.name)
-      toolkit.set_output('artifact_name', inputs.output.name)
+      toolkit.set_env('artifact_name', output.name)
+      toolkit.set_output('artifact_name', output.name)
       toolkit.set_env('artifact_path', output)
       toolkit.set_output('artifact_path', output)
 
