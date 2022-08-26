@@ -77,7 +77,7 @@ runs:
       def package_ipa(inputs):
           ipa = inputs.input / f'{inputs.project_name }.ipa'
           output = (inputs.output_dir / inputs.output_name).with_suffix('.ipa')
-          output.hardlink_to(inputs.ipa)
+          output.hardlink_to(ipa)
           return output
 
       package = {
