@@ -41,53 +41,75 @@ inputs:
 runs:
   using: composite
   steps:
-  - shell: bash
+  - shell: python
+    env:
+      PYTHONPATH: ${{ github.action_path }}/..
     run: |
-      declare -a BOB_ARGS
-      BOB_ARGS=(
-        --verbose
-        --root "${{ inputs.input }}"
-        --output "${{ inputs.output }}"
-        ${{ inputs.args }}
-      )
+      import dataclasses
+      import os
+      import pathlib
+      import shlex
+      import subprocess
+      import sys
 
-      if [ -n "${{ inputs.build_server }}" ]; then
-        BOB_ARGS+=(
-          --build-server "${{ inputs.build_server }}"
-        )
-      fi
+      import toolkit
 
-      if [ -n "${{ inputs.email }}" ]; then
-        if [ -z "${{ inputs.auth }}" ]; then
-          echo '::error title="Configuration Issue"::Both `email` and `auth` should be provided at the same time.'
-        fi
-        BOB_ARGS+=(
-          --email "${{ inputs.email }}"
-          --auth "${{ inputs.auth }}"
-        )
-      fi
+      @dataclasses.dataclass(frozen=True)
+      class Inputs:
+          input: str
+          output: str
+          args: str
+          action: str
+          platform: str
+          architectures: str
+          bundle_output: str
+          build_server: str
+          email: str
+          auth: str
+          settings: str
 
-      case "${{ inputs.action }}" in
-      build)
-        BOB_ARGS+=( --archive )
-        ;;
-      bundle)
-        BOB_ARGS+=(
-          --bundle-output "${{ inputs.bundle_output }}"
-          --platform "${{ inputs.platform }}"
-          --architectures "${{ inputs.architectures }}"
-        )
-        ;;
-      *)
-        ;;
-      esac
 
-      if [ -n "${{ inputs.settings }}" ]; then
-        BOB_ARGS+=(
-          --settings "${{ inputs.settings }}"
-        )
-      fi
+      inputs = toolkit.inputs_from_env(Inputs, os.environ)
 
-      BOB_ARGS+=( "${{ inputs.action }}" )
+      bob_command = [
+          'java', '-jar', os.environ['BOB'],
+          '--verbose',
+          '--root', inputs.input,
+      ]
 
-      java -jar "${BOB}" "${BOB_ARGS[@]}"
+      if inputs.args:
+          bob_command += shlex.split(inputs.args)
+
+      if inputs.build_server:
+          bob_command += [
+              '--build-server', inputs.build_server,
+          ]
+
+      if inputs.email or inputs.auth:
+          if not inputs.email or not inputs.auth:
+              toolkit.perror(
+                  'Configuration Issue',
+                  'Both `email` and `auth` should be provided at the same time.')
+
+          bob_command += [
+              '--email', inputs.email,
+              '--auth', inputs.auth,
+          ]
+
+      if inputs.settings:
+          BOB_ARGS += [
+              '--settings', inputs.settings,
+          ]
+
+      if inputs.action == 'build':
+          bob_command.append('--archive')
+      elif inputs.action == 'bundle':
+          bob_command += [
+              '--bundle-output', inputs.bundle_output,
+              '--platform', inputs.platform,
+              '--architectures', inputs.architectures
+          ]
+
+      bob_command.append(inputs.action)
+
+      sys.exit(subprocess.call(bob_command))
