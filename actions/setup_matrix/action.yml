@@ -53,6 +53,10 @@ runs:
       import dataclasses
       import json
 
+      from typing import (
+          List,
+      )
+
       import toolkit
 
       @toolkit.inputs
@@ -77,11 +81,11 @@ runs:
 
       @dataclasses.dataclass(frozen=True)
       class Matrix:
-          include: list[MatrixItem]
+          include: List[MatrixItem]
 
       inputs = Inputs.load()
 
-      variants: list[MatrixItem] = []
+      variants: List[MatrixItem] = []
 
       if inputs.bundle_x86_64_linux:
           variants.append(MatrixItem(
