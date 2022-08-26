@@ -85,4 +85,4 @@ runs:
       input: ${{ inputs.output }}/${{ inputs.platform }}
       project_name: ${{ env.DEFOLD_PROJECT_NAME }}
       bundle_type: ${{ inputs.bundle_type }}
-      output: ${{ inputs.output }}/${{ env.DEFOLD_PROJECT_NAME }}-${{ inputs.platform }}.${{ input.bundle_type }}
+      output: ${{ inputs.output }}/${{ env.DEFOLD_PROJECT_NAME }}-${{ inputs.platform }}.${{ inputs.bundle_type }}
