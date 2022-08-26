@@ -44,8 +44,8 @@ runs:
   - shell: python
     env:
       PYTHONPATH: ${{ github.action_path }}/..
+      INPUTS: ${{ toJSON(inputs) }}
     run: |
-      import dataclasses
       import os
       import pathlib
       import shlex
@@ -54,7 +54,7 @@ runs:
 
       import toolkit
 
-      @dataclasses.dataclass(frozen=True)
+      @toolkit.inputs
       class Inputs:
           input: str
           output: str
@@ -69,7 +69,7 @@ runs:
           settings: str
 
 
-      inputs = toolkit.inputs_from_env(Inputs, os.environ)
+      inputs = toolkit.load_inputs(Inputs)
 
       bob_command = [
           'java', '-jar', os.environ['BOB'],

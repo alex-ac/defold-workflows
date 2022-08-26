@@ -1,33 +1,43 @@
 import dataclasses
+import json
 import os
 import pathlib
 import subprocess
 
 from typing import (
-    Type, TypeVar, Dict, Optional, Union, List,
+    Type, TypeVar, Dict, Optional, Union, List, Any,
 )
 
 
 T = TypeVar('T')
 
 
-def inputs_from_env(cls: Type[T], env: Optional[Dict[str, str]] = None) -> T:
-    env: Dict[str, str] = env or os.environ
-
+def _load_inputs(cls: Type[T], inputs: Any) -> T:
     args: Dict[str, Any] = {}
 
-    print(env)
     for field in dataclasses.fields(cls):
-        value = env.get(f'INPUT_{field.name.upper()}', '').strip()
+        value = inputs.get(f'INPUT_{field.name.upper()}', '').strip()
 
         if field.type is bool:
             value = field.type != 'false'
-
-        value = field.type(value)
+        elif dataclasses.is_dataclass(field.type):
+            value = _load_inputs(field.type, value)
+        else:
+            value = field.type(value)
 
         args[field.name] = value
 
     return cls(**args)
+
+
+def inputs(cls: Type[T]) -> Type[T]:
+
+    @dataclasses.dataclass(frozen=True)
+    class Inputs(cls):
+        @classmethod
+        def load(cls, inputs: Any = None) -> T:
+            inputs = inputs or json.loads(os.environ.get('INPUTS', '{}'))
+            return _load_inputs(cls, inputs)
 
 
 def perror(title: str, message: str):
