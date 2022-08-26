@@ -8,7 +8,7 @@ from typing import (
 T = TypeVar('T')
 
 
-def inputs_from_env(cls: Type[T], env: Optional[Dict[str, str] = None) -> T:
+def inputs_from_env(cls: Type[T], env: Optional[Dict[str, str]] = None) -> T:
     env: Dict[str, str] = env or os.environ
 
     args: Dict[str, Any] = {}
