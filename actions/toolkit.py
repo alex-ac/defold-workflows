@@ -39,7 +39,10 @@ def inputs(cls: Type[T]) -> Type[T]:
         @classmethod
         def load(cls, inputs: Any = None) -> T:
             inputs = inputs or json.loads(os.environ.get('INPUTS', '{}'))
-            return _load_inputs(cls, inputs)
+            value = _load_inputs(cls, inputs)
+
+            debug(repr(value))
+            return value
 
     Inputs.__name__ = cls.__name__
     Inputs.__module__ = cls.__module__
@@ -50,9 +53,14 @@ def inputs(cls: Type[T]) -> Type[T]:
 def perror(title: str, message: str):
     print(f'::error title={title}::{message}')
 
+
+def debug(message: str):
+    print(f'::debug::{message}')
+
+
 def run(command: List[Union[str, pathlib.Path]], cwd: Optional[pathlib.Path] = None):
     if cwd is None:
         cwd = pathlib.Path.cwd()
 
-    print(f'{cwd} $ {" ".join(command)}')
+    debug(f'{cwd} $ {" ".join(command)}')
     return subprocess.call(command, cwd=cwd)
