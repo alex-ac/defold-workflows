@@ -3,8 +3,11 @@ inputs:
   input:
     description: Path to the input directory.
     required: true
-  output:
-    description: Path to the output file.
+  output_dir:
+    description: Path to the output directory.
+    required: true
+  output_name:
+    description: Basename of the output file.
     required: true
   project_name:
     description: Name of the defold project.
@@ -17,6 +20,9 @@ outputs:
   artifact_name:
     description: Name of the uploaded artifact.
     value: ${{ steps.package.outputs.artifact_name }}
+  artifact_path:
+    description: Name of the uploaded artifact.
+    value: ${{ steps.package.outputs.artifact_path }}
 
 runs:
   using: composite
@@ -35,7 +41,8 @@ runs:
       @toolkit.inputs
       class Inputs:
           input: pathlib.Path
-          output: pathlib.Path
+          output_dir: pathlib.Path
+          output_name: str
           project_name: str
           bundle_type: str
 
@@ -43,31 +50,35 @@ runs:
 
       def package_dmg(inputs) -> pathlib.Path:
           (inputs.input / 'Applications').symlink_to('/Applications')
+          output = (inputs.output / inputs.output_name).with_suffix('.dmg')
 
           toolkit.check_call([
               'hdiutil', 'create',
               '-format', 'UDZO',
               '-srcfolder', inputs.input,
               '-volname', inputs.project_name,
-              inputs.output,
+              output,
           ])
 
       def package_archive(format):
           def package(inputs):
-              output = shutil.make_archive(
-                  inputs.output.with_suffix(''),
-                  format, root_dir=inputs.input, base_dir='.')
-              toolkit.debug(f'Packaged archive: {output}')
+              return pathlib.Path(shutil.make_archive(
+                  inputs.output_dir / inputs.output_name,
+                  format, root_dir=inputs.input, base_dir='.'))
 
           return package
 
       def package_apk(inputs):
           apk = inputs.input / inputs.project_name / f'{inputs.project_name}.apk'
-          inputs.output.hardlink_to(apk)
+          output = (inputs.output / inputs.output_name).with_suffix('.apk')
+          output.hardlink_to(apk)
+          return output
 
       def package_ipa(inputs):
           ipa = inputs.input / f'{inputs.project_name }.ipa'
-          ipa.hardlink_to(inputs.output)
+          output = (inputs.output / inputs.output_name).with_suffix('.ipa')
+          output.hardlink_to(inputs.ipa)
+          return output
 
       package = {
           'tgz': package_archive('gztar'),
@@ -77,11 +88,13 @@ runs:
           'ipa': package_ipa,
       }[inputs.bundle_type]
 
-      package(inputs)
+      output = package(inputs)
       toolkit.set_env('artifact_name', inputs.output.name)
       toolkit.set_output('artifact_name', inputs.output.name)
+      toolkit.set_env('artifact_path', output)
+      toolkit.set_output('artifact_path', output)
 
   - uses: actions/upload-artifact@v3
     with:
       name: ${{ env.artifact_name }}
-      path: ${{ inputs.output }}
+      path: ${{ env.artifact_path }}
