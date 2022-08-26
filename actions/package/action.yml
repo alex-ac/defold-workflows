@@ -37,7 +37,7 @@ runs:
           input: pathlib.Path
           output: pathlib.Path
           project_name: str
-          bundle_type: bundle_type
+          bundle_type: str
 
       inputs = Inputs.load()
 
