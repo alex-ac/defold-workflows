@@ -12,16 +12,40 @@ outputs:
     value: ${{ steps.detect_project_name.outputs.project_name }}
 runs:
   using: composite
+  env:
+    INPUTS: ${{ toJSON(inputs)}}
+    PYTHONPATH: ${{ github.action_path }}/..
   steps:
   - id: detect_project_name
-    shell: bash
+    shell: python
     run: |
-      declare -a ARGS
-      ARGS=()
-      if [ -n "${{ inputs.settings }}" ]; then
-        ARGS+=( --settings "${{ inputs.settings }}" )
-      fi
-      python3 "${{ github.action_path }}/detect_project_name.py" \
-          "${{ inputs.project_path }}" \
-          --append-to "${GITHUB_ENV}" \
-          "${ARGS[@]}"
+      import configparser
+      import pathlib
+
+      import toolkit
+
+      @toolkit.inputs
+      class Inputs:
+          project_path: pathlib.Path
+          settings: str
+
+      inputs = Inputs.load()
+
+      project_file = inputs.project_path / 'game.project'
+      config = configparser.ConfigParser()
+      config.read(project_file, encoding='utf-8')
+      project_name = config.get('project', 'title')
+      toolkit.debug(
+          f'Loaded project.title from {project_file}: {project_name}')
+
+      if input.settings:
+          for path in map(pathlib.Path, input.settings.split(',')):
+              config = configparser.ConfigParser()
+              config.read(config_path, encoding='utf-8')
+              if config.has_option('project', 'title'):
+                  project_name = config.get('project', 'title')
+                  toolkit.debug(
+                      f'Loaded project.title from {path}: {project_name}')
+
+      toolkit.set_output('project_name', project_name)
+      toolkit.set_env('DEFOLD_PROJECT_NAME', project_name)

@@ -64,3 +64,15 @@ def run(command: List[Union[str, pathlib.Path]], cwd: Optional[pathlib.Path] = N
 
     debug(f'{cwd} $ {" ".join(command)}')
     return subprocess.call(command, cwd=cwd)
+
+def set_output(name: str, value: str):
+    print(f'::set-output name={name}::{value}')
+
+def set_env(name: str, value: str):
+    if os.environ['GITHUB_ENV']:
+        github_env = pathlib.Path(os.environ['GITHUB_ENV'])
+
+        with github_env.open('a', encoding='utf-8') as f:
+            f.write(f'{name}={value}\n')
+    else:
+        print(f'::set-env name={name}::{value}')
