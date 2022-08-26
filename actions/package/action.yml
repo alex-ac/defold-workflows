@@ -42,8 +42,7 @@ runs:
       inputs = Inputs.load()
 
       def package_dmg(inputs) -> pathlib.Path:
-          applications = pathlib.Path('/Applications')
-          applications.symlink_to(inputs.input / 'Applications')
+          (inputs.input / 'Applications').symlink_to('/Applications')
 
           toolkit.check_call([
               'hdiutil', 'create',
@@ -63,11 +62,11 @@ runs:
 
       def package_apk(inputs):
           apk = inputs.input / inputs.project_name / f'{inputs.project_name}.apk'
-          apk.link_to(inputs.output)
+          inputs.output.hardlink_to(apk)
 
       def package_ipa(inputs):
-          ipa = inputs.input / f'{input.project_name }.ipa'
-          ipa.link_to(inputs.output)
+          ipa = inputs.input / f'{inputs.project_name }.ipa'
+          ipa.hardlink_to(inputs.output)
 
       package = {
           'tgz': package_archive('gztar'),
