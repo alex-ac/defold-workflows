@@ -54,7 +54,7 @@ runs:
           def package(inputs):
               shutil.make_archive(
                   inputs.output.name.with_suffix(''),
-                  format, root_dir=inputs.input, '.')
+                  format, root_dir=inputs.input, base_dir='.')
 
           return package
 
