@@ -69,7 +69,7 @@ runs:
           settings: str
 
 
-      inputs = toolkit.load_inputs(Inputs)
+      inputs = Inputs.load()
 
       bob_command = [
           'java', '-jar', os.environ['BOB'],
