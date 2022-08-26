@@ -60,6 +60,8 @@ runs:
               output,
           ])
 
+          return output
+
       def package_archive(format):
           def package(inputs):
               return pathlib.Path(shutil.make_archive(
