@@ -30,6 +30,7 @@ runs:
       PYTHONPATH: ${{ github.action_path }}/..
       INPUTS: ${{ toJSON(inputs) }}
     run: |
+      import dataclasses
       import json
       import urllib.request
 
