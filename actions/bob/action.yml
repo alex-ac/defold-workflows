@@ -115,13 +115,13 @@ runs:
                 'Both `private_key_path` and `public_key_path` should be '
                 'provided at the same time.')
 
-          BOB_ARGS += [
+          bob_command += [
               '--manifest-private-key', inputs.private_key_path,
               '--manifest-public-key', inputs.public_key_path,
           ]
 
       if inputs.settings:
-          BOB_ARGS += [
+          bob_command += [
               '--settings', inputs.settings,
           ]
 
