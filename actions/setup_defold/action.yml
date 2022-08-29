@@ -32,6 +32,7 @@ runs:
     run: |
       import dataclasses
       import json
+      import pathlib
       import platform
       import urllib.request
 
