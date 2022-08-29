@@ -19,7 +19,7 @@ runs:
   steps:
   - uses: alex-ac/defold-workflows/actions/bob@master
     with:
-      input: .${{ inputs.project_path }}
+      input: ${{ inputs.project_path }}
       output: ${{ inputs.output }}/default
       args: ${{ inputs.args }}
       settings: ${{ inputs.settings }}
