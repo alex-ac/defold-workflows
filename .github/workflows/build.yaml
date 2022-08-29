@@ -128,14 +128,14 @@ jobs:
       timeout-minutes: 5
       with:
         project_path: ${{ inputs.project_path }}
-        output: ./build/default
+        output: ./build
         settings: ${{ inputs.settings }}
 
     - uses: alex-ac/defold-workflows/actions/build@master
       timeout-minutes: 5
       with:
         project_path: ${{ inputs.project_path }}
-        output: ./build/default
+        output: ./build
         private_key_path: ${{ steps.setup_private_key.outputs.path }}
         public_key_path: ${{ steps.setup_public_key.outputs.path }}
         settings: ${{ inputs.settings }}
@@ -144,7 +144,7 @@ jobs:
       timeout-minutes: 5
       with:
         project_path: ${{ inputs.project_path }}
-        output: ./build/default
+        output: ./build
         build_server: ${{ inputs.build_server }}
         email: ${{ secrets.email }}
         auth: ${{ secrets.auth }}
