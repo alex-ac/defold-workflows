@@ -18,6 +18,8 @@ runs:
       PYTHONPATH: ${{ github.action_path }}/..
       INPUTS: ${{ toJSON(inputs) }}
     run: |
+      import pathlib
+
       import toolkit
 
       @toolkit.inputs
