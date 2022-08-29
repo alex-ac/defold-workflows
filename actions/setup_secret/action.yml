@@ -21,6 +21,7 @@ runs:
       INPUTS: ${{ toJSON(inputs) }}
       PYTHONPATH: ${{ github.action_path }}/..
     if: inputs.base64_data
+    id: setup_secret
     run: |
       import base64
       import pathlib
