@@ -14,8 +14,12 @@ inputs:
       Target platform of dmengine.
 
 outputs:
-  bob: ${{ steps.setup_defold.bob }}
-  dmengine: ${{ steps.setup_defold.dmengine }}
+  bob:
+    description: Path to the bob.jar.
+    value: ${{ steps.setup_defold.bob }}
+  dmengine:
+    description: Path to the dmengine executable.
+    value: ${{ steps.setup_defold.dmengine }}
 
 runs:
   using: composite
