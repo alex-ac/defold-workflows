@@ -38,4 +38,4 @@ runs:
       with inputs.path.open('wb') as f:
           f.write(data)
 
-      toolkit.output('path', inputs.path)
+      toolkit.set_output('path', inputs.path)
