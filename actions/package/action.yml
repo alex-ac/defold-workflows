@@ -95,8 +95,3 @@ runs:
       toolkit.set_output('artifact_name', output.name)
       toolkit.set_env('artifact_path', output)
       toolkit.set_output('artifact_path', output)
-
-  - uses: actions/upload-artifact@v3
-    with:
-      name: ${{ env.artifact_name }}
-      path: ${{ env.artifact_path }}

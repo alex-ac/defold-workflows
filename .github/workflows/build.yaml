@@ -169,3 +169,8 @@ jobs:
         bundle_type: ${{ matrix.bundle_type }}
         output_dir: ./build
         output_name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.archive_name_platform }}
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.artifact_name }}
+        path: ${{ env.artifact_path }}
