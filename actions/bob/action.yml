@@ -62,6 +62,10 @@ runs:
       import subprocess
       import sys
 
+      from typing import (
+          Optional,
+      )
+
       import toolkit
 
       @toolkit.inputs
