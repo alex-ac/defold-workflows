@@ -88,3 +88,14 @@ def set_env(name: str, value: str):
             f.write(f'{name}={value}\n')
     else:
         print(f'::set-env name={name}::{value}')
+
+def add_to_path(path: pathlib.Path):
+    items = [
+        pathlib.Path(item)
+        for item in os.environ['PATH'].split(os.pathsep)
+        if item
+    ]
+
+    items[0:0] = [path]
+
+    set_env('PATH', os.pathsep.join(str(item) for item in items))

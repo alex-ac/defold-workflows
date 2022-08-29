@@ -78,6 +78,7 @@ runs:
           architectures: str
           bundle_type: str
           archive_name_platform: str
+          supports_tests: bool
 
 
       @dataclasses.dataclass(frozen=True)
@@ -95,24 +96,27 @@ runs:
               architectures='x86_64-linux',
               bundle_type='tgz',
               archive_name_platform='x86_64-linux',
+              supports_tests=True,
           ))
 
       if inputs.bundle_x86_64_win:
           variants.append(MatrixItem(
-              host_os='ubuntu-latest',
+              host_os='windows-latest',
               platform='x86_64-win32',
               architectures='x86_64-win32',
               bundle_type='zip',
               archive_name_platform='x86_64-windows',
+              supports_tests=True,
           ))
 
       if inputs.bundle_x86_win:
           variants.append(MatrixItem(
-              host_os='ubuntu-latest',
+              host_os='windows-latest',
               platform='x86-win32',
               architectures='x86-win32',
               bundle_type='zip',
               archive_name_platform='x86-windows',
+              supports_tests=True,
           ))
 
       if inputs.bundle_x86_64_mac:
@@ -122,6 +126,7 @@ runs:
               architectures='x86_64-darwin',
               bundle_type='dmg',
               archive_name_platform='x86_64-macos',
+              supports_tests=True,
           ))
 
       if inputs.bundle_arm64_ios:

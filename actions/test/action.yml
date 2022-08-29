@@ -1,0 +1,36 @@
+name: Test
+inputs:
+  project_path:
+    default: .
+    description: Path to the defold project.
+  test_collection:
+    required: true
+    description: Name of the main collection used for tests.
+  dmengine_path:
+    required: true
+    description: Path to the headless dmengine.
+
+runs:
+  using: composite
+  steps:
+  - shell: python
+    env:
+      PYTHONPATH: ${{ github.action_path }}/..
+      INPUTS: ${{ toJSON(inputs) }}
+    run: |
+      import toolkit
+
+      @toolkit.inputs
+      class Inputs:
+          project_path: pathlib.Path
+          test_collection: pathlib.Path
+
+      inputs = Inputs.load()
+
+      sys.exit(toolkit.run(
+          [
+              inputs.dmengine,
+              f'--config=bootstrap.main_collection={inputs.test_collection}',
+          ],
+          cwd=inputs.project_path,
+      ))

@@ -1,0 +1,99 @@
+name: Setup Defold
+description: Download bob.jar and dmengine_headless.
+
+inputs:
+  version:
+    default: stable
+    description: |
+      Version of the defold to setup. Acceptable values are
+      `stable`, `beta`, `alpha` or sha1 revision.
+
+  platform:
+    required: false
+    description: |
+      Target platform of dmengine.
+
+outputs:
+  bob: ${{ steps.setup_defold.bob }}
+  dmengine: ${{ steps.setup_defold.dmengine }}
+
+runs:
+  using: composite
+  steps:
+  - shell: python
+    id: setup_defold
+    env:
+      PYTHONPATH: ${{ github.action_path }}/..
+      INPUTS: ${{ toJSON(inputs) }}
+    run: |
+      import json
+      import urllib.request
+
+      import toolkit
+
+      @toolkit.inputs
+      class Inputs:
+          version: str
+          platform: str
+
+      inputs = Inputs.load()
+
+      @dataclasses.dataclass(frozen=True)
+      class VersionInfo:
+          version: str
+          sha1: str
+
+          @property
+          def bob_url(self) -> str:
+              return f'https://d.defold.com/archive/{self.sha1}/bob/bob.jar'
+
+          def dmengine_name_for_platform(self, platform: str) -> str:
+              exe_suffix = '.exe' if 'win32' in platform else ''
+              return f'dmengine_headless{exe_suffix}'
+
+          def dmengine_url_for_platform(self, platform: str) -> str:
+              exe_name = self.dmengine_name_for_platform(platform)
+              return (
+                  f'https://d.defold.com/archive/{self.sha1}/engine/'
+                  f'{platform}/{exe_name}'
+              )
+
+      def resolve(version: str) -> VersionInfo:
+          url = f'https://d.defold.com/{version}/info.json'
+          with urllib.request.urlopen(url) as response:
+              return VersionInfo(**json.load(response))
+
+      version_info = resolve(inputs.version)
+
+      if not inputs.platform or not inputs.platform.startswith('x86'):
+          target_platform = {
+              'Linux': 'x86_64-linux',
+              'Darwin': 'x86_64-darwin',
+              'Windows': 'x86_64-win32',
+          }[platform.system()]
+      else:
+          target_platform = inputs.platform
+
+      install_path = pathlib.Path('.defold')
+      if not install_path.exists():
+          install_path.mkdir(parents=True)
+
+      bob_path = install_path / 'bob.jar'
+      urllib.request.urlretrieve(version_info.bob_url, bob_path)
+
+      dmengine_path = (
+          install_path / version_info.dmengine_name_for_platform(
+              target_platform))
+      urllib.request.urlretrieve(
+          version_info.dmengine_url_for_platform(target_platform),
+          dmengine_path)
+
+      if not platform.system() == 'Windows':
+          dmengine_path.chmod(0o0755)
+
+      toolkit.set_output('bob', bob_path.resolve())
+      toolkit.set_output('dmengine', dmengine_path.resolve())
+      toolkit.set_env('BOB', bob_path.resolve())
+      toolkit.set_env('DMENGINE', dmengine_path.resolve())
+
+      toolkit.add_to_path(install_path)

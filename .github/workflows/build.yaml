@@ -17,6 +17,10 @@ on:
         type: string
         description: Comma-separated list of settings files.
         required: false
+      test_collection:
+        type: string
+        required: false
+        description: Collection to use as main one in tests.
 
       bundle_x86_64_linux:
         type: boolean
@@ -79,10 +83,6 @@ jobs:
     outputs:
       matrix: ${{ steps.setup_matrix.outputs.matrix }}
     steps:
-    - uses: actions/checkout@v3
-      with:
-        repository: alex-ac/defold-workflows
-
     - uses: ./actions/setup_matrix
       id: setup_matrix
       with:
@@ -102,6 +102,7 @@ jobs:
 
     runs-on: ${{ matrix.host_os }}
     steps:
+      # Checkout, setup python, java & defold.
     - uses: actions/checkout@v3
 
     - uses: actions/setup-python@v3
@@ -111,8 +112,40 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '11'
-    - uses: dapetcu21/setup-defold@v3.0.2
+    - uses: alex-ac/defold-workflows/actions/setup_defold@master
+      id: setup_defold
+      with:
+        version: ${{ inputs.defold_version }}
+        platform: ${{ matrix.platform }}
 
+      # Download all dependencies.
+    - uses: alex-ac/defold-workflows/actions/resolve_dependencies@master
+      timeout-minutes: 5
+      with:
+        project_path: ${{ inputs.project_path }}
+        output: ./build
+        settings: ${{ inputs.settings }}
+
+      # Build for testing.
+    - uses: alex-ac/defold-workflows/actions/build@master
+      if: inputs.test_collection && matrix.supports_tests
+      timeout-minutes: 5
+      with:
+        project_path: ${{ inputs.project_path }}
+        output: ./build
+        settings: ${{ inputs.settings }}
+        args: --keep-unused
+
+      # Run tests.
+    - uses: alex-ac/defold-workflows/action/test@master
+      if: inputs.test_collection && matrix.supports_tests
+      timeout-minutes: 5
+      with:
+        dmengine: ${{ steps.setup_defold.outputs.dmengine }}
+        project_path: ${{ inputs.project_path }}
+        test_collection: ${{ inputs.test_collection }}
+
+      # Setup secrets.
     - uses: alex-ac/defold-workflows/actions/setup_secret@master
       id: setup_private_key
       with:
@@ -124,13 +157,7 @@ jobs:
         base64_data: ${{ secrets.public_key_base64 }}
         path: ./manifest.public.der
 
-    - uses: alex-ac/defold-workflows/actions/resolve_dependencies@master
-      timeout-minutes: 5
-      with:
-        project_path: ${{ inputs.project_path }}
-        output: ./build
-        settings: ${{ inputs.settings }}
-
+      # Build game archive.
     - uses: alex-ac/defold-workflows/actions/build@master
       timeout-minutes: 5
       with:
@@ -140,6 +167,7 @@ jobs:
         public_key_path: ${{ steps.setup_public_key.outputs.path }}
         settings: ${{ inputs.settings }}
 
+      # Bundle game for the selected platform.
     - uses: alex-ac/defold-workflows/actions/bundle@master
       timeout-minutes: 5
       with:
@@ -156,12 +184,14 @@ jobs:
         bundle_type: ${{ matrix.bundle_type }}
         settings: ${{ inputs.settings }}
 
+      # Detect project name (it is used in the artifact name).
     - id: detect_project_name
       uses: alex-ac/defold-workflows/actions/detect_project_name@master
       with:
         project_path: ${{ inputs.project_path }}
         settings: ${{ inputs.settings }}
 
+      # Package the artifact.
     - uses: alex-ac/defold-workflows/actions/package@master
       with:
         input: ./build/${{ matrix.platform }}
@@ -170,6 +200,7 @@ jobs:
         output_dir: ./build
         output_name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.archive_name_platform }}
 
+      # Upload artifact.
     - uses: actions/upload-artifact@v3
       with:
         name: ${{ env.artifact_name }}
