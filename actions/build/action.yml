@@ -32,6 +32,16 @@ inputs:
     type: string
     required: false
     description: Auth for cloud-builder.
+  private_key_path:
+    type: string
+    required: false
+    description: |
+      A path to .der file containing private key for signing the game content.
+  public_key_path:
+    type: string
+    required: false
+    description: |
+      A path to .der file containing public key for signing the game content.
   bundle_type:
     type: string
     required: true
@@ -57,6 +67,8 @@ runs:
       build_server: ${{ inputs.build_server }}
       email: ${{ inputs.email }}
       auth: ${{ inputs.auth }}
+      private_key_path: ${{ inputs.private_key_path }}
+      public_key_path: ${{ inputs.public_key_path }}
       settings: ${{ inputs.settings }}
       action: resolve
 
@@ -67,6 +79,8 @@ runs:
       build_server: ${{ inputs.build_server }}
       email: ${{ inputs.email }}
       auth: ${{ inputs.auth }}
+      private_key_path: ${{ inputs.private_key_path }}
+      public_key_path: ${{ inputs.public_key_path }}
       settings: ${{ inputs.settings }}
       action: build
 
@@ -80,6 +94,8 @@ runs:
       architectures: ${{ inputs.architectures }}
       email: ${{ inputs.email }}
       auth: ${{ inputs.auth }}
+      private_key_path: ${{ inputs.private_key_path }}
+      public_key_path: ${{ inputs.public_key_path }}
       settings: ${{ inputs.settings }}
       action: bundle
 

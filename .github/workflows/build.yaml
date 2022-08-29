@@ -62,6 +62,16 @@ on:
       auth:
         required: false
         description: Auth token for cloud-builder.
+      private_key_base64:
+        required: false
+        descirption: |
+          Base64-encoded contents of der file of private key for signing game
+          manifest.
+      public_key_base64:
+        required: false
+        descirption: |
+          Base64-encoded contents of der file of public key for signing game
+          manifest.
 
 jobs:
   setup_matrix:
@@ -103,6 +113,19 @@ jobs:
         java-version: '11'
     - uses: dapetcu21/setup-defold@v3.0.2
 
+    - uses: actions/setup_secret
+      if: secrets.private_key_base64
+      id: setup_private_key
+      with:
+        base64_data: ${{ secrets.private_key_base64 }}
+        path: ./manifest.private.der
+    - uses: actions/setup_secret
+      if: secrets.public_key_base64
+      id: setup_public_key
+      with:
+        base64_data: ${{ secrets.public_key_base64 }}
+        path: ./manifest.public.der
+
     - uses: alex-ac/defold-workflows/actions/build@master
       timeout-minutes: 10
       with:
@@ -111,6 +134,8 @@ jobs:
         build_server: ${{ inputs.build_server }}
         email: ${{ secrets.email }}
         auth: ${{ secrets.auth }}
+        private_key_path: ${{ steps.setup_private_key.outputs.path }}
+        public_key_path: ${{ steps.setup_public_key.outputs.path }}
         platform: ${{ matrix.platform }}
         architectures: ${{ matrix.architectures }}
         archive_name_platform: ${{ matrix.archive_name_platform }}

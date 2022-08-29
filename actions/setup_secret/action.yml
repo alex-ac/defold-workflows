@@ -1,0 +1,38 @@
+name: Run bob to perform actions on the project.
+inputs:
+  base64_data:
+    required: true
+    type: string
+    description: Base64-encoded data of secret.
+  path:
+    required: true
+    type: string
+    description: Path to the secret file to be setup.
+outputs:
+  path:
+    description: The path to the created secret file.
+    value: ${{ inputs.path }}
+
+runs:
+  using: composite
+  steps:
+  - shell: python
+    env:
+      INPUTS: ${{ toJSON(inputs) }}
+      PYTHONPATH: ${{ github.action_path }}/..
+    run: |
+      import base64
+      import pathlib
+
+      import toolkit
+
+      @toolkit.inputs
+      class Inputs:
+          base64_data: str
+          path: pathlib.Path
+
+      inputs = Inputs.load()
+
+      data = base64.standard_b64decode(inputs.base64_data)
+      with inputs.path('wb') as f:
+          f.write(data)
