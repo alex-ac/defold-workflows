@@ -35,7 +35,7 @@ runs:
       inputs = Inputs.load()
 
       data = base64.standard_b64decode(inputs.base64_data)
-      with inputs.path('wb') as f:
+      with inputs.path.open('wb') as f:
           f.write(data)
 
       toolkit.output('path', inputs.path)
