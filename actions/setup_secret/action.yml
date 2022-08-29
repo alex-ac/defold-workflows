@@ -11,7 +11,7 @@ inputs:
 outputs:
   path:
     description: The path to the created secret file.
-    value: ${{ inputs.path }}
+    value: ${{ steps.setup_secret.outputs.path }}
 
 runs:
   using: composite
@@ -20,6 +20,7 @@ runs:
     env:
       INPUTS: ${{ toJSON(inputs) }}
       PYTHONPATH: ${{ github.action_path }}/..
+    if: inputs.base64_data
     run: |
       import base64
       import pathlib
@@ -36,3 +37,5 @@ runs:
       data = base64.standard_b64decode(inputs.base64_data)
       with inputs.path('wb') as f:
           f.write(data)
+
+      toolkit.output('path', inputs.path)
