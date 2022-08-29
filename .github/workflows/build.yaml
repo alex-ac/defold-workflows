@@ -113,13 +113,13 @@ jobs:
         java-version: '11'
     - uses: dapetcu21/setup-defold@v3.0.2
 
-    - uses: actions/setup_secret
+    - uses: alex-ac/defold-workflows/actions/setup_secret@master
       if: secrets.private_key_base64
       id: setup_private_key
       with:
         base64_data: ${{ secrets.private_key_base64 }}
         path: ./manifest.private.der
-    - uses: actions/setup_secret
+    - uses: alex-ac/defold-workflows/actions/setup_secret@master
       if: secrets.public_key_base64
       id: setup_public_key
       with:
