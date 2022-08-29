@@ -1,6 +1,4 @@
-name: Build
-description: |
-  End-to-end build of the defold project.
+name: Resolve the project dependencies.
 inputs:
   project_path:
     default: .
@@ -11,16 +9,6 @@ inputs:
   args:
     type: string
     description: Extra arguments for bob.
-  private_key_path:
-    type: string
-    required: false
-    description: |
-      A path to .der file containing private key for signing the game content.
-  public_key_path:
-    type: string
-    required: false
-    description: |
-      A path to .der file containing public key for signing the game content.
   settings:
     type: string
     required: false
@@ -31,10 +19,9 @@ runs:
   steps:
   - uses: alex-ac/defold-workflows/actions/bob@master
     with:
-      input: ${{ inputs.project_path }}
+      input: .${{ inputs.project_path }}
       output: ${{ inputs.output }}/default
       args: ${{ inputs.args }}
-      private_key_path: ${{ inputs.private_key_path }}
-      public_key_path: ${{ inputs.public_key_path }}
       settings: ${{ inputs.settings }}
-      action: build
+      action: resolve
+

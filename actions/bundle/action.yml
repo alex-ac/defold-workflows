@@ -1,6 +1,5 @@
-name: Build
-description: |
-  End-to-end build of the defold project.
+name: Bundle
+description: Bundle the project for a target platform.
 inputs:
   project_path:
     default: .
@@ -11,6 +10,24 @@ inputs:
   args:
     type: string
     description: Extra arguments for bob.
+  platform:
+    type: string
+    description: Platform to bundle for.
+  architectures:
+    type: string
+    description: Comma-separated list of architectures to bundle for.
+  build_server:
+    type: string
+    description: Address of the cloud build server.
+    required: false
+  email:
+    type: string
+    required: false
+    description: Email for cloud-builder.
+  auth:
+    type: string
+    required: false
+    description: Auth for cloud-builder.
   private_key_path:
     type: string
     required: false
@@ -34,7 +51,13 @@ runs:
       input: ${{ inputs.project_path }}
       output: ${{ inputs.output }}/default
       args: ${{ inputs.args }}
+      build_server: ${{ inputs.build_server }}
+      bundle_output: ${{ inputs.output }}/${{ inputs.platform }}
+      platform: ${{ inputs.platform }}
+      architectures: ${{ inputs.architectures }}
+      email: ${{ inputs.email }}
+      auth: ${{ inputs.auth }}
       private_key_path: ${{ inputs.private_key_path }}
       public_key_path: ${{ inputs.public_key_path }}
       settings: ${{ inputs.settings }}
-      action: build
+      action: bundle

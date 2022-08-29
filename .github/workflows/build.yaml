@@ -124,11 +124,27 @@ jobs:
         base64_data: ${{ secrets.public_key_base64 }}
         path: ./manifest.public.der
 
-    - uses: alex-ac/defold-workflows/actions/build@master
-      timeout-minutes: 10
+    - uses: alex-ac/defold-workflows/actions/resolve_dependencies@master
+      timeout-minutes: 5
       with:
         project_path: ${{ inputs.project_path }}
-        output: ./build
+        output: ./build/default
+        settings: ${{ inputs.settings }}
+
+    - uses: alex-ac/defold-workflows/actions/build@master
+      timeout-minutes: 5
+      with:
+        project_path: ${{ inputs.project_path }}
+        output: ./build/default
+        private_key_path: ${{ steps.setup_private_key.outputs.path }}
+        public_key_path: ${{ steps.setup_public_key.outputs.path }}
+        settings: ${{ inputs.settings }}
+
+    - uses: alex-ac/defold-workflows/actions/bundle@master
+      timeout-minutes: 5
+      with:
+        project_path: ${{ inputs.project_path }}
+        output: ./build/default
         build_server: ${{ inputs.build_server }}
         email: ${{ secrets.email }}
         auth: ${{ secrets.auth }}
@@ -139,3 +155,17 @@ jobs:
         archive_name_platform: ${{ matrix.archive_name_platform }}
         bundle_type: ${{ matrix.bundle_type }}
         settings: ${{ inputs.settings }}
+
+    - id: detect_project_name
+      uses: alex-ac/defold-workflows/actions/detect_project_name@master
+      with:
+        project_path: ${{ inputs.project_path }}
+        settings: ${{ inputs.settings }}
+
+    - uses: alex-ac/defold-workflows/actions/package@master
+      with:
+        input: ./build/${{ matrix.platform }}
+        project_name: ${{ env.DEFOLD_PROJECT_NAME }}
+        bundle_type: ${{ matrix.bundle_type }}
+        output_dir: ./build
+        output_name: ${{ env.DEFOLD_PROJECT_NAME }}-${{ matrix.archive_name_platform }}
