@@ -141,7 +141,7 @@ jobs:
       if: inputs.test_collection && matrix.supports_tests
       timeout-minutes: 5
       with:
-        dmengine: ${{ steps.setup_defold.outputs.dmengine }}
+        dmengine_path: ${{ steps.setup_defold.outputs.dmengine }}
         project_path: ${{ inputs.project_path }}
         test_collection: ${{ inputs.test_collection }}
 
