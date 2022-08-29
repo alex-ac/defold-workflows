@@ -66,8 +66,8 @@ runs:
 
       @toolkit.inputs
       class Inputs:
-          input: str
-          output: str
+          input: Optional[pathlib.Path]
+          output: Optional[pathlib.Path]
           args: str
           action: str
           platform: str
@@ -76,8 +76,8 @@ runs:
           build_server: str
           email: str
           auth: str
-          private_key_path: pathlib.Path
-          public_key_path: pathlib.Path
+          private_key_path: Optional[pathlib.Path]
+          public_key_path: Optional[pathlib.Path]
           settings: str
 
 
@@ -86,7 +86,8 @@ runs:
       bob_command = [
           'java', '-jar', os.environ['BOB'],
           '--verbose',
-          '--root', inputs.input,
+          '--root', inputs.input or pathlib.Path.cwd(),
+          '--output', inputs.output or pathlib.Path('build/default'),
       ]
 
       if inputs.args:

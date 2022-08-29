@@ -22,6 +22,11 @@ def _load_inputs(cls: Type[T], inputs: Any) -> T:
             value = field.type != 'false'
         elif dataclasses.is_dataclass(field.type):
             value = _load_inputs(field.type, value)
+        elif field.type is Optional[pathlib.Path]:
+            if value:
+                value = pathlib.Path(value)
+            else:
+                value = None
         else:
             value = field.type(value)
 
