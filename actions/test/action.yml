@@ -26,13 +26,14 @@ runs:
       @toolkit.inputs
       class Inputs:
           project_path: pathlib.Path
+          dmengine_path: pathlib.Path
           test_collection: pathlib.Path
 
       inputs = Inputs.load()
 
       sys.exit(toolkit.run(
           [
-              inputs.dmengine,
+              inputs.dmengine_path,
               f'--config=bootstrap.main_collection={inputs.test_collection}',
           ],
           cwd=inputs.project_path,
