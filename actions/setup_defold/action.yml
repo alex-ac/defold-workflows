@@ -16,10 +16,10 @@ inputs:
 outputs:
   bob:
     description: Path to the bob.jar.
-    value: ${{ steps.setup_defold.bob }}
+    value: ${{ steps.setup_defold.outputs.bob }}
   dmengine:
     description: Path to the dmengine executable.
-    value: ${{ steps.setup_defold.dmengine }}
+    value: ${{ steps.setup_defold.outputs.dmengine }}
 
 runs:
   using: composite
