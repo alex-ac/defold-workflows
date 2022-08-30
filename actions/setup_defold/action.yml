@@ -81,6 +81,9 @@ runs:
       else:
           target_platform = inputs.platform
 
+      if target_platform == 'x86-win32':
+          target_platform = 'win32'
+
       install_path = pathlib.Path('.defold')
       if not install_path.exists():
           install_path.mkdir(parents=True)
