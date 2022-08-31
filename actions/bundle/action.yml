@@ -10,6 +10,11 @@ inputs:
   args:
     type: string
     description: Extra arguments for bob.
+  headless:
+    type: boolean
+    default: ${{ false }}
+    required: false
+    description: Bundle headless version of the engine.
   platform:
     type: string
     description: Platform to bundle for.
@@ -51,6 +56,7 @@ runs:
       input: ${{ inputs.project_path }}
       output: ${{ inputs.output }}/default
       args: ${{ inputs.args }}
+      headless: ${{ inputs.headless }}
       build_server: ${{ inputs.build_server }}
       bundle_output: ${{ inputs.output }}/${{ inputs.platform }}
       platform: ${{ inputs.platform }}

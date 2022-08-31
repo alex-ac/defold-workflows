@@ -9,6 +9,11 @@ inputs:
   args:
     type: string
     description: Free-form args for bob.
+  headless:
+    required: false
+    default: ${{ false }}
+    type: boolean
+    description: Bundle headless version of the engine.
   keep_unused:
     required: false
     default: ${{ false }}
@@ -79,6 +84,7 @@ runs:
           output: Optional[pathlib.Path]
           args: str
           keep_unused: bool
+          headless: bool
           action: str
           platform: str
           architectures: str
@@ -110,6 +116,9 @@ runs:
 
       if inputs.keep_unused:
           bob_command.append('--keep-unused')
+
+      if inputs.headless:
+          bob_command += [ '--variant', 'headless' ]
 
       if inputs.email or inputs.auth:
           if not inputs.email or not inputs.auth:
