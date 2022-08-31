@@ -50,7 +50,7 @@ runs:
               return VersionInfo(**json.load(response))
 
       version_info = resolve(inputs.version)
-      toolkit.debug('version_info')
+      toolkit.debug(f'Version: {version_info}')
 
       install_path = pathlib.Path('.defold')
       if not install_path.exists():
