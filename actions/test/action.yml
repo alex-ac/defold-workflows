@@ -63,7 +63,7 @@ runs:
 
       if inputs.platform not in supported_platforms:
           toolkit.perror(
-              'Unsupported platform.'
+              'Unsupported platform.',
               f'Can\'t run tests on bundle built for {inputs.platform} on '
               f'{platform.system()}.')
           sys.exit(1)
