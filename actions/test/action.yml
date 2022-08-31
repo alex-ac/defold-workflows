@@ -32,7 +32,7 @@ runs:
           bundle_path: pathlib.Path
           platform: str
           project_name: str
-          test_collection: pathlib.Path
+          test_collection: str
 
       inputs = Inputs.load()
 
