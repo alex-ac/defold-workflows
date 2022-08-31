@@ -70,9 +70,13 @@ runs:
 
       executable_path = supported_platforms[inputs.platform]
 
-      sys.exit(toolkit.run(
-          [
-              executable_path,
-              f'--config=bootstrap.main_collection={inputs.test_collection}',
-          ],
-      ))
+      test_command = []
+      if platform.system() == 'Linux':
+          test_command.append('xvfb-run')
+
+      test_command += [
+          executable_path,
+          f'--config=bootstrap.main_collection={inputs.test_collection}',
+      ]
+
+      sys.exit(toolkit.run(test_command))
