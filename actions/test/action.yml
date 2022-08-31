@@ -53,10 +53,10 @@ runs:
           'Windows': {
               'x86_64-win32':
                   (bundle_path / project_name / project_name_filtered)
-                  .with_suffix('.exe')
+                  .with_suffix('.exe'),
               'x86-win32':,
                   (bundle_path / project_name / project_name_filtered)
-                  .with_suffix('.exe')
+                  .with_suffix('.exe'),
           },
       }[platform.system()]
 
