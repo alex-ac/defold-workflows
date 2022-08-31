@@ -1,0 +1,29 @@
+name: Cleanup
+description: Cleanup build directory for futher steps.
+inputs:
+  path:
+    type: string
+    description: Path to the directory to remove.
+    required: true
+
+runs:
+  using: composite
+  steps:
+  - shell: python
+    env:
+      INPUTS: ${{ toJSON(inputs) }}
+    run: |
+      import pathlib
+      import shutil
+
+      import toolkit
+
+      @toolkit.inputs
+      class Inputs:
+          path: pathlib.Path
+
+      inputs = Inputs.load()
+
+      if inputs.path.exists():
+          toolkit.debug(f'Removing directory {inputs.path}')
+          shutil.rmtree(inputs.path)

@@ -160,7 +160,10 @@ jobs:
         bundle_path: ./build/${{ matrix.platform }}
         test_collection: ${{ inputs.test_collection }}
 
-    - runs: [ ! -e ./build ] || rm -rf ./build
+      # Cleanup test build.
+    - uses: alex-ac/defold-workflows/actions/cleanup@master
+      with:
+        path: ./build
 
       # Setup secrets.
     - uses: alex-ac/defold-workflows/actions/setup_secret@master
