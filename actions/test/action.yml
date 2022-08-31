@@ -22,6 +22,7 @@ runs:
       INPUTS: ${{ toJSON(inputs) }}
     run: |
       import pathlib
+      import platform
       import sys
 
       import toolkit
