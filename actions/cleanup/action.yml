@@ -12,6 +12,7 @@ runs:
   - shell: python
     env:
       INPUTS: ${{ toJSON(inputs) }}
+      PYTHONPATH: ${{ github.action_path }}/..
     run: |
       import pathlib
       import shutil
