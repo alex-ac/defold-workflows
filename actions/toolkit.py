@@ -19,7 +19,7 @@ def _load_inputs(cls: Type[T], inputs: Any) -> T:
         value = inputs.get(field.name, '').strip()
 
         if field.type is bool:
-            value = field.type != 'false'
+            value = value != 'false'
         elif dataclasses.is_dataclass(field.type):
             value = _load_inputs(field.type, value)
         elif field.type is Optional[pathlib.Path]:
