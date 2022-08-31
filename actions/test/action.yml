@@ -1,14 +1,17 @@
 name: Test
 inputs:
-  project_path:
+  bundle_path:
     default: .
-    description: Path to the defold project.
+    description: Path to the built bundle.
   test_collection:
     required: true
     description: Name of the main collection used for tests.
-  dmengine_path:
+  project_name:
     required: true
-    description: Path to the headless dmengine.
+    description: Project name from game.project (it's used in file names).'
+  platform:
+    required: true
+    description: The platform we're testing.
 
 runs:
   using: composite
@@ -25,16 +28,50 @@ runs:
 
       @toolkit.inputs
       class Inputs:
-          project_path: pathlib.Path
-          dmengine_path: pathlib.Path
+          bundle_path: pathlib.Path
+          platform: str
+          project_name: str
           test_collection: pathlib.Path
 
       inputs = Inputs.load()
 
+      bundle_path = inputs.bundle_path
+      project_name = inputs.project_name
+      project_name_filtered = project_name.replace('-', '')
+
+      supported_platforms = {
+          'Darwin': {
+              'x86_64-darwin':
+                  (bundle_path / project_name).with_suffix('.app') /
+                  'Contents' / 'MacOS' / project_name_filtered,
+          },
+          'Linux': {
+              'x86_64-linux':
+                  (bundle_path / project_name / project_name_filtered)
+                  .with_suffix('.x86_64'),
+          },
+          'Windows': {
+              'x86_64-win32':
+                  (bundle_path / project_name / project_name_filtered)
+                  .with_suffix('.exe')
+              'x86-win32':,
+                  (bundle_path / project_name / project_name_filtered)
+                  .with_suffix('.exe')
+          },
+      }[platform.system()]
+
+      if inputs.platform not in supported_platforms:
+          toolkit.error(
+              'Unsupported platform.'
+              f'Can\'t run tests on bundle built for {inputs.platform} on '
+              f'{platform.system()}.')
+          sys.exit(1)
+
+      executable_path = supported_platforms[inputs.platform]
+
       sys.exit(toolkit.run(
           [
-              inputs.dmengine_path,
+              executable_path,
               f'--config=bootstrap.main_collection={inputs.test_collection}',
           ],
-          cwd=inputs.project_path,
       ))

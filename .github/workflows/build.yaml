@@ -120,6 +120,7 @@ jobs:
 
       # Download all dependencies.
     - uses: alex-ac/defold-workflows/actions/resolve_dependencies@master
+      if: inputs.test_collection && matrix.supports_tests
       timeout-minutes: 5
       with:
         project_path: ${{ inputs.project_path }}
@@ -134,16 +135,32 @@ jobs:
         project_path: ${{ inputs.project_path }}
         output: ./build
         settings: ${{ inputs.settings }}
-        args: --keep-unused
+        keep_unused: ${{ true }}
+
+      # Bundle for testing
+    - uses: alex-ac/defold-workflows/actions/bundle@master
+      if: inputs.test_collection && matrix.supports_tests
+      timeout-minutes: 5
+      with:
+        project_path: ${{ inputs.project_path }}
+        output: ./build
+        build_server: ${{ inputs.build_server }}
+        email: ${{ secrets.email }}
+        auth: ${{ secrets.auth }}
+        platform: ${{ matrix.platform }}
+        architectures: ${{ matrix.architectures }}
+        settings: ${{ inputs.settings }}
 
       # Run tests.
     - uses: alex-ac/defold-workflows/action/test@master
       if: inputs.test_collection && matrix.supports_tests
       timeout-minutes: 5
       with:
-        dmengine_path: ${{ steps.setup_defold.outputs.dmengine }}
-        project_path: ${{ inputs.project_path }}
+        platform: ${{ matrix.platform }}
+        bundle_path: ./build/${{ matrix.platform }}
         test_collection: ${{ inputs.test_collection }}
+
+    - runs: [ ! -e ./build ] || rm -rf ./build
 
       # Setup secrets.
     - uses: alex-ac/defold-workflows/actions/setup_secret@master
@@ -156,6 +173,14 @@ jobs:
       with:
         base64_data: ${{ secrets.public_key_base64 }}
         path: ./manifest.public.der
+
+      # Download all dependencies.
+    - uses: alex-ac/defold-workflows/actions/resolve_dependencies@master
+      timeout-minutes: 5
+      with:
+        project_path: ${{ inputs.project_path }}
+        output: ./build
+        settings: ${{ inputs.settings }}
 
       # Build game archive.
     - uses: alex-ac/defold-workflows/actions/build@master

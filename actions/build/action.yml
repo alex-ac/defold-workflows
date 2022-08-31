@@ -11,6 +11,10 @@ inputs:
   args:
     type: string
     description: Extra arguments for bob.
+  keep_unused:
+    type: boolean
+    default: ${{ false }}
+    description: Keep unused files in the game archive.
   private_key_path:
     type: string
     required: false
@@ -34,6 +38,7 @@ runs:
       input: ${{ inputs.project_path }}
       output: ${{ inputs.output }}/default
       args: ${{ inputs.args }}
+      keep_unused: ${{ inputs.keep_unused }}
       private_key_path: ${{ inputs.private_key_path }}
       public_key_path: ${{ inputs.public_key_path }}
       settings: ${{ inputs.settings }}

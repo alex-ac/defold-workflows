@@ -9,6 +9,11 @@ inputs:
   args:
     type: string
     description: Free-form args for bob.
+  keep_unused:
+    required: false
+    default: ${{ false }}
+    type: boolean
+    description: Keep unused data in the game archive.
   action:
     required: true
     description: Action to run.
@@ -73,6 +78,7 @@ runs:
           input: Optional[pathlib.Path]
           output: Optional[pathlib.Path]
           args: str
+          keep_unused: bool
           action: str
           platform: str
           architectures: str
@@ -101,6 +107,9 @@ runs:
           bob_command += [
               '--build-server', inputs.build_server,
           ]
+
+      if inputs.keep_unused:
+          bob_command.append('--keep-unused')
 
       if inputs.email or inputs.auth:
           if not inputs.email or not inputs.auth:
