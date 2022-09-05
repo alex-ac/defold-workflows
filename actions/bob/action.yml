@@ -148,13 +148,17 @@ runs:
               '--settings', inputs.settings,
           ]
 
+      if inputs.platform:
+          '--platform', inputs.platform,
+
+      if inputs.architectures:
+          '--architectures', inputs.architectures
+
       if inputs.action == 'build':
           bob_command.append('--archive')
       elif inputs.action == 'bundle':
           bob_command += [
               '--bundle-output', inputs.bundle_output,
-              '--platform', inputs.platform,
-              '--architectures', inputs.architectures
           ]
 
       bob_command.append(inputs.action)
