@@ -20,6 +20,12 @@ inputs:
     required: false
     description: |
       A path to .der file containing private key for signing the game content.
+  platform:
+    type: string
+    description: Platform to bundle for.
+  architectures:
+    type: string
+    description: Comma-separated list of architectures to bundle for.
   public_key_path:
     type: string
     required: false
@@ -39,6 +45,8 @@ runs:
       output: ${{ inputs.output }}/default
       args: ${{ inputs.args }}
       keep_unused: ${{ inputs.keep_unused }}
+      platforM: ${{ inputs.platform }}
+      architectures: ${{ inputs.architectures }}
       private_key_path: ${{ inputs.private_key_path }}
       public_key_path: ${{ inputs.public_key_path }}
       settings: ${{ inputs.settings }}
