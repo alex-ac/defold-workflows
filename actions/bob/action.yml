@@ -149,10 +149,14 @@ runs:
           ]
 
       if inputs.platform:
-          '--platform', inputs.platform,
+          bob_command += [
+              '--platform', inputs.platform,
+          ]
 
       if inputs.architectures:
-          '--architectures', inputs.architectures
+          bob_command += [
+              '--architectures', inputs.architectures
+          ]
 
       if inputs.action == 'build':
           bob_command.append('--archive')
