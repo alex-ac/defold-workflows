@@ -45,7 +45,7 @@ runs:
       output: ${{ inputs.output }}/default
       args: ${{ inputs.args }}
       keep_unused: ${{ inputs.keep_unused }}
-      platforM: ${{ inputs.platform }}
+      platform: ${{ inputs.platform }}
       architectures: ${{ inputs.architectures }}
       private_key_path: ${{ inputs.private_key_path }}
       public_key_path: ${{ inputs.public_key_path }}
